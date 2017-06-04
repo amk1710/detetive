@@ -12,7 +12,6 @@ import javax.swing.JRootPane;
 
 import gameController.ObservedGame;
 import gameView.GameView;
-import preGame_View.GameScreen;
 
 public class StartGameHandler{
 	private int numActive = 0;
@@ -57,10 +56,11 @@ public class StartGameHandler{
 				if(numActive >= ObservedGame.minPlayers){
 					System.out.println(playerActive[0] + "\n" + playerActive[1] + "\n" + playerActive[2] + "\n" + 
 									   playerActive[3] + "\n" + playerActive[4] + "\n" + playerActive[5] + "\n");
-					GameScreen game = new GameScreen("DETETIVE - CLUE ", playerActive);
-					GameView view = new GameView(playerActive);
+					//GameScreen game = new GameScreen("DETETIVE - CLUE ", playerActive);
+					GameView view = new GameView("DETETIVE - CLUE ", playerActive);
 					System.out.println(view.toString());
-					game.setVisible(true);
+					//game.setVisible(true);
+					view.setVisible(true);
 					JRootPane contentPane = ((JButton)e.getSource()).getRootPane();
 					JFrame j = (JFrame) contentPane.getParent();
 					j.dispose();

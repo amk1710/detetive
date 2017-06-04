@@ -17,4 +17,6 @@ public interface ObservedGame
 	
 	public int getTurn();
 	
+	public boolean getDieWasRolled();
+	
 }
