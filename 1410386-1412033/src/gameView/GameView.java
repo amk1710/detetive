@@ -33,7 +33,7 @@ public class GameView extends JFrame implements Observer
 
 	ObservedGame gc;
 	DieDisplay die;
-	Tabuleiro tab;
+	Tabuleiro grid;
 	
 	//construtor para novo jogo
 	public GameView(String s, boolean[] activePlayer)
@@ -45,13 +45,15 @@ public class GameView extends JFrame implements Observer
 		gc = GameRulesFactory.getGameInstance(activePlayer);
 		gc.addObserver(this);		
 		
-		getContentPane().setLayout(new FlowLayout());
-		tab = new Tabuleiro(activePlayer);
+		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
+		grid = new Tabuleiro(activePlayer, gc);
 		die = new DieDisplay(gc);
 		
-		getContentPane().add(die);
-		getContentPane().add(tab);
 		
+		
+		getContentPane().add(grid);
+		getContentPane().add(die);
+		pack();
 		// Inicializa janela no tamanho default no centro da tela.
 		Toolkit tk=Toolkit.getDefaultToolkit();
 		Dimension screenSize=tk.getScreenSize();
@@ -65,6 +67,8 @@ public class GameView extends JFrame implements Observer
 	public void update(Observable o, Object arg)
 	{
 		this.repaint();
+		grid.repaint();
+		die.repaint();
 	}	
 
 }
@@ -113,7 +117,7 @@ class DieDisplay extends JPanel
 		c.insets = new Insets(0, 0, 8, 0);	
         c.anchor = GridBagConstraints.PAGE_END;
 		
-		//bot�o usado para tentar rolar o dado
+		//bot�o usado para tentar rolar o dado
         JButton rollDie = new JButton("Rolar Dado");
 		rollDie.addActionListener(new RollDieHandler(gc));
 		
@@ -203,6 +207,7 @@ class Tabuleiro extends JPanel
 	private BufferedImage i;
 	private final int treshold = 18;
 	private int passo = 1000; //obtido do dado - via notificaçao observer
+	private ObservedGame gc = null;
 	
 	//Players info
 	private boolean[] playerActive = null;
@@ -230,7 +235,7 @@ class Tabuleiro extends JPanel
 	private int y_white		= 58;
 	private Color white_color = new Color(183,186,193);
 	
-	public Tabuleiro(boolean[] playerActive)
+	public Tabuleiro(boolean[] playerActive, ObservedGame game)
 	{
 		try{
 			i = ImageIO.read(new File("assets/Tabuleiro-Original.JPG"));
@@ -241,15 +246,18 @@ class Tabuleiro extends JPanel
 		}
 		
 		this.playerActive = playerActive;
+		this.gc = game;
 		this.addMouseListener(new MouseListener(){
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if( posValida(e.getX(), e.getY())){
 					//Muda posição do jogador 
+					mudaPos(e.getX(), e.getY());
 					//Manda repintar
-					
+					repaint();
 					//Passa a vez
+					gc.endTurn();
 				}
 			}
 			@Override
@@ -263,6 +271,31 @@ class Tabuleiro extends JPanel
 		});
 	}
 	
+	protected void mudaPos(int x, int y) {
+		int playerX=0, playerY=0, deslX=0, deslY=0, player=-1;
+		switch(gc.getTurn()){
+			case 0: playerX = x_green; playerY = y_green; player=0; break;
+			case 1:	playerX = x_mustard; playerY = y_mustard; player=1;break;
+			case 2: playerX = x_peacock; playerY = y_peacock; player=2;break;
+			case 3: playerX = x_plum; playerY = y_plum; player=3;break;
+			case 4: playerX = x_scarlet; playerY = y_scarlet; player=4;break;
+			case 5: playerX = x_white; playerY = y_white; player=5;break;
+		};
+		
+		deslX = (int) Math.ceil((x-playerX)/36);System.out.println(deslX);
+		deslY = (int) Math.ceil((y-playerY)/36);System.out.println(deslY);
+		
+		switch(player){
+		case 0: x_green +=  36*deslX; y_green +=  36*deslY; break;
+		case 1:	x_mustard +=  36*deslX; y_mustard +=  36*deslY; break;
+		case 2: x_peacock +=  36*deslX; y_peacock+=  36*deslY; break;
+		case 3: x_plum +=  36*deslX; y_plum +=  36*deslY; break;
+		case 4: x_scarlet+=  36*deslX; y_scarlet +=  36*deslY; break;
+		case 5: x_white +=  36*deslX; y_white +=  36*deslY;break;
+	};
+		
+	}
+
 	public Dimension getPreferredSize() {
         return new Dimension(i.getWidth(), i.getHeight());
     }
@@ -294,43 +327,42 @@ class Tabuleiro extends JPanel
 			if(x >=440 && x <=625 && y >=419 && y <=678){System.out.println("Dentro do bloco central"); return false;}
 			//Dentro da sla de jantar	
 			if( (x >=104 && x <=365 && y >=450 && y<=642) || (x >=104 && x <=254 && y >=384 && y <=450)){
-				if(distanciaValida(311, 660 /*, passos-1*/) && !jogadorEm(311, 660)){System.out.println("Dentro da sala de jantar");return true;}
+				if(distanciaValida(311, 660, passo) && !jogadorEm(311, 660)){System.out.println("Dentro da sala de jantar");return true;}
 			}
 			//Dentro da cozinha
 			if(x >=106 && x <=289 && y >=92 && y<=312){
-				if(distanciaValida(236, 330 /*, passos-1*/) && !jogadorEm(236, 330)){System.out .println("Dentro da cozinha");return true;}
+				if(distanciaValida(236, 330, passo) && !jogadorEm(236, 330)){System.out .println("Dentro da cozinha");return true;}
 			}
 			//Dentro do salão de música
 			if( (x >=441 && x <=577 && y >=106 && y<=133) || (x >=366 && x <=655 && y >=133 && y<=346)){
-				if((distanciaValida(420,365 /*, passos-1*/) || distanciaValida(675,258 /*, passos-1*/)) && (!jogadorEm(420,365) || !jogadorEm(675,258))){System.out.println("Dentro do salao de musica");return true;}
+				if((distanciaValida(420,365, passo) || distanciaValida(675,258, passo)) && (!jogadorEm(420,365) || !jogadorEm(675,258))){System.out.println("Dentro do salao de musica");return true;}
 			}
 			//Dentro do jardim de inverno 
 			if( (x >=733 && x <=908 && y >=97 && y<=239) || (x >=771 && x <=913 && y >=239 && y<=278)){
-				if(distanciaValida(748, 258 /*, passos-1*/) && !jogadorEm(748, 258)){System.out.println("Dentro do jardim de inverno");return true;}
+				if(distanciaValida(748, 258, passo) && !jogadorEm(748, 258)){System.out.println("Dentro do jardim de inverno");return true;}
 			}
 			//Dentro do salão de jogos
 			if(x>=734 && x <=908 && y >=348 && y<=529){
-				if(distanciaValida(713,401 /*, passos-1*/) && !jogadorEm(713, 401)){System.out.println("Dentro do salao de jogos");return true;}
+				if(distanciaValida(713,401, passo) && !jogadorEm(713, 401)){System.out.println("Dentro do salao de jogos");return true;}
 			}
 			//Dentro da biblioteca
 			if((x >=696 && x <=908 && y >=607 && y <=711) || ( x >=734 && x <=908 && ((y >=567 && y <=607) || (y >=711 && y <=748))) ){
-				if(distanciaValida(678,657 /*, passos-1*/) && !jogadorEm(678,657)){System.out.println("Dentro da biblioteca");return true;}
+				if(distanciaValida(678,657, passo) && !jogadorEm(678,657)){System.out.println("Dentro da biblioteca");return true;}
 			}
 			//Dentro do escritório
 			if(x >=700 && x <=908 && y >=819 && y <=938){
-				if(distanciaValida(716,802 /*, passos-1*/) && !jogadorEm(716,802)){System.out.println("Dentro do escritório");return true;}
+				if(distanciaValida(716,802, passo) && !jogadorEm(716,802)){System.out.println("Dentro do escritório");return true;}
 			}
 			//Dentro da sala de estar
 			if(x >=106 && x <=330 && y >=752 && y <=938){
-				if(distanciaValida(312,733 /*, passos-1*/) && !jogadorEm(312,733)){System.out.println("Dentro da sala de estar");return true;}
+				if(distanciaValida(312,733,passo) && !jogadorEm(312,733)){System.out.println("Dentro da sala de estar");return true;}
 			}
 			//Dentro da entrada
 			if(x >=407 && x <=620 && y >=713 && y <=938){
-				if(distanciaValida(532,695 /*, passos-1*/) && !jogadorEm(532,695)){System.out.println("Dentro da entrada");return true;}
+				if(distanciaValida(532,695, passo) && !jogadorEm(532,695)){System.out.println("Dentro da entrada");return true;}
 			}
-			
-			
 			//Testa se respeita distancia de acordo com o dado
+			if(distanciaValida(x, y, passo)) return true;
 		}
 		return false;
 	}
@@ -345,12 +377,18 @@ class Tabuleiro extends JPanel
 		return false;
 	}
 
-	private boolean distanciaValida(int x, int y /*, passos*/) {
-		//Pega posiçao do jogador da vez
-		//Calcula distancia x em quadrados
-		//Calcula distancia y em quadrados
-		//Se x+y <= passos return true
-		return true;
+	private boolean distanciaValida(int x, int y, int passo) {
+		int playerX=0, playerY=0;
+		switch(gc.getTurn()){
+			case 0: playerX = x_green; playerY = y_green; break;
+			case 1:	playerX = x_mustard; playerY = y_mustard; break;
+			case 2: playerX = x_peacock; playerY = y_peacock; break;
+			case 3: playerX = x_plum; playerY = y_plum; break;
+			case 4: playerX = x_scarlet; playerY = y_scarlet; break;
+			case 5: playerX = x_white; playerY = y_white; break;
+		};
+		if(Math.abs(x-playerX)/36 + (Math.abs(y-playerY)/36) <=passo){System.out.println("Passo valido"); return true;}
+		return false;
 	}
 
 }
