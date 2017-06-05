@@ -74,7 +74,9 @@ class DieDisplay extends JPanel
 {
 	// usado para manipular o jogo
 	private ObservedGame gc;
-	private int result;	
+	private int result;
+	
+	private ImagePanel imgPanel;
 	
 	//imagens para resultados de 1 a 6
 	private BufferedImage d1;
@@ -107,6 +109,7 @@ class DieDisplay extends JPanel
 		GridBagConstraints c = new GridBagConstraints();
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 2;
 		c.insets = new Insets(0, 0, 8, 0);	
         c.anchor = GridBagConstraints.PAGE_END;
 		
@@ -114,9 +117,17 @@ class DieDisplay extends JPanel
         JButton rollDie = new JButton("Rolar Dado");
 		rollDie.addActionListener(new RollDieHandler(gc));
 		
+		imgPanel = new ImagePanel(d1);
+		
 		c.gridy=0;
 	    c.weighty = 1.0;
 	    add(rollDie, c);
+	    
+	    c.gridy=0;
+        c.weighty = 1.0;
+		add(imgPanel, c);
+	    
+	    
 		
 	}
 	
@@ -132,29 +143,59 @@ class DieDisplay extends JPanel
 		switch(gc.getDie())
 		{
 			case 1: 
+				//imgPanel.setImage(d1);
 				g.drawImage(d1, 0, 0, d1.getWidth(), d1.getHeight(), this);
 				break;
 			case 2:
+				//imgPanel.setImage(d2);
 				g.drawImage(d2, 0, 0, d2.getWidth(), d2.getHeight(), this);
 				break;
 			case 3: 
+				//imgPanel.setImage(d3);
 				g.drawImage(d3, 0, 0, d3.getWidth(), d3.getHeight(), this);
 				break;
 			case 4: 
+				//imgPanel.setImage(d4);
 				g.drawImage(d4, 0, 0, d4.getWidth(), d4.getHeight(), this);
 				break;
 			case 5: 
+				//imgPanel.setImage(d5);
 				g.drawImage(d5, 0, 0, d5.getWidth(), d5.getHeight(), this);
 				break;
 			case 6: 
+				//imgPanel.setImage(d6);
 				g.drawImage(d6, 0, 0, d6.getWidth(), d6.getHeight(), this);
-				break;				
+				break;		
 		}
+		
+		imgPanel.repaint();
 		
 		
 	}
 	
 	
+}
+
+class ImagePanel extends JPanel
+{
+	BufferedImage img;
+		
+	public ImagePanel(BufferedImage i)
+	{
+		img = i;
+	}
+	
+	public void setImage(BufferedImage i)
+	{
+		img = i;
+	}
+	
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), this);
+	}
+		
 }
 
 class Tabuleiro extends JPanel

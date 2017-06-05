@@ -53,6 +53,12 @@ class GameRules extends Observable implements ObservedGame
 	
 	public void rollDie()
 	{
+		//se dado já foi rolado essa rodada, não faz nada
+		if(dieWasRolled)
+		{
+			return;
+		}
+		
 		dieWasRolled = true;
 		die = (1+ roller.nextInt(6));
 		notifyView();
