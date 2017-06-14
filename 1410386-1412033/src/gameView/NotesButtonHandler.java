@@ -21,7 +21,7 @@ public class NotesButtonHandler implements ActionListener
 	
 	public void actionPerformed(ActionEvent arg0) 
 	{
-		NotesWindow notes = new NotesWindow("Minhas notas");
+		NotesWindow notes = new NotesWindow("Minhas notas", gc);
 		notes.setVisible(true);
 	}
 

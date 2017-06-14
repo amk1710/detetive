@@ -1,10 +1,16 @@
 package gameView;
 
+import gameController.ObservedGame;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,13 +24,19 @@ public class NotesWindow extends JFrame
 	
 	NotesControl notesController;
 	
-	public NotesWindow(String s)
+	ObservedGame gc;
+	
+	public NotesWindow(String s, ObservedGame game)
 	{
 		super (s);
+		gc = game;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 		
-		notesController = new NotesControl();
+		//adiciona windows listener para rodar função quando fechar a janela
+		this.addWindowListener(new notesWindowListener(this));
+		
+		notesController = new NotesControl(gc);
 		setContentPane(notesController);
 		pack();
 		
@@ -41,10 +53,41 @@ public class NotesWindow extends JFrame
 		setBounds(x,y,(int)getContentPane().getPreferredSize().getWidth(),(int)getContentPane().getPreferredSize().getHeight());
 	
 	}
+	
+	
+}
+
+class notesWindowListener extends WindowAdapter
+{
+	private NotesWindow window;
+	notesWindowListener(NotesWindow w)
+	{
+		window = w;
+	}
+	
+	@Override
+	public void windowClosed(WindowEvent e)
+	{
+		
+		window.gc.setNotes_Players(window.notesController.playerMarked);
+		window.gc.setNotes_Weapons(window.notesController.weaponsMarked);
+	}
 }
 
 class NotesControl extends JPanel{
-	public NotesControl()
+	
+	ObservedGame gc;
+	
+	private JCheckBox[] playerCheckBoxes;
+	private JCheckBox[] weaponCheckBoxes;
+	
+	boolean[] playerMarked;
+	boolean[] weaponsMarked;
+	
+	private ItemListener checkboxListener = null;
+	
+	
+	NotesControl(ObservedGame game)
 	{
 		
 		//Define layout do painel contendo os botÃµes
@@ -53,36 +96,104 @@ class NotesControl extends JPanel{
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 0, 0, 0);	
 		
-		JCheckBox green		= new JCheckBox("Reverendo Green"); 	
-		green.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
-		JCheckBox mustard	= new JCheckBox("Coronel Mustard"); 	
-		mustard.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
-		JCheckBox peacock	= new JCheckBox("Senhora Peacock"); 	
-		peacock.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
-		JCheckBox plum		= new JCheckBox("Professor Plum");  	
-		plum.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
-		JCheckBox scarlet	= new JCheckBox("Senhorita Scarlet");	
-		scarlet.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
-		JCheckBox white		= new JCheckBox("Senhora White"); 		
-		white.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		gc = game;
+		
+		playerMarked = gc.getNotedPlayers();
+		weaponsMarked = gc.getNotedWeapons();
+		
+		checkboxListener = new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) 
+			{
+				System.out.println("itemStateChanged");
+				JCheckBox source = (JCheckBox) e.getSource();
+				
+				for(int i = 0; i < 6; i++)
+				{
+					if(source.equals(playerCheckBoxes[i]))
+					{
+						playerMarked[i] = source.isSelected();
+						return;
+					}
+				}
+				
+				for(int i = 0; i < 6; i++)
+				{
+					if(source.equals(weaponCheckBoxes[i]))
+					{
+						weaponsMarked[i] = source.isSelected();
+						return;
+					}
+				}
+			}
+		};
+		
+		playerCheckBoxes = new JCheckBox[6];
+		
+		playerCheckBoxes[0]		= new JCheckBox("Reverendo Green", playerMarked[0]); 	
+		playerCheckBoxes[0].addItemListener(checkboxListener);
+		playerCheckBoxes[1]	= new JCheckBox("Coronel Mustard", playerMarked[1]); 	
+		playerCheckBoxes[1].addItemListener(checkboxListener);
+		playerCheckBoxes[2]	= new JCheckBox("Senhora Peacock", playerMarked[2]); 	
+		playerCheckBoxes[2].addItemListener(checkboxListener);
+		playerCheckBoxes[3]		= new JCheckBox("Professor Plum", playerMarked[3]);  	
+		playerCheckBoxes[3].addItemListener(checkboxListener);
+		playerCheckBoxes[4]	= new JCheckBox("Senhorita Scarlet", playerMarked[4]);	
+		playerCheckBoxes[4].addItemListener(checkboxListener);
+		playerCheckBoxes[5]		= new JCheckBox("Senhora White", playerMarked[5]); 		
+		playerCheckBoxes[5].addItemListener(checkboxListener);
+		
+		weaponCheckBoxes = new JCheckBox[6];
+		
+		weaponCheckBoxes[0]		= new JCheckBox("Corda", weaponsMarked[0]); 	
+		weaponCheckBoxes[0].addItemListener(checkboxListener);
+		weaponCheckBoxes[1]	= new JCheckBox("Cano de Chumbo", weaponsMarked[1]); 	
+		weaponCheckBoxes[1].addItemListener(checkboxListener);
+		weaponCheckBoxes[2]	= new JCheckBox("Faca", weaponsMarked[2]); 	
+		weaponCheckBoxes[2].addItemListener(checkboxListener);
+		weaponCheckBoxes[3]		= new JCheckBox("Chave Inglesa", weaponsMarked[3]);  	
+		weaponCheckBoxes[3].addItemListener(checkboxListener);
+		weaponCheckBoxes[4]	= new JCheckBox("Castiçal", weaponsMarked[4]);	
+		weaponCheckBoxes[4].addItemListener(checkboxListener);
+		weaponCheckBoxes[5]		= new JCheckBox("Revólver", weaponsMarked[5]); 		
+		weaponCheckBoxes[5].addItemListener(checkboxListener);
+		
+		
 		
 		
 		c.weightx = 1;
 		c.weighty = 1;
 		
+		
 		c.gridy=0;
-		add(green, c);
+		add(playerCheckBoxes[0], c);
 		c.gridy=1;
-		add(mustard, c);
+		add(playerCheckBoxes[1], c);
 		c.gridy=2;
-		add(peacock, c);
+		add(playerCheckBoxes[2], c);
 		c.gridy=3;
-		add(plum, c);
+		add(playerCheckBoxes[3], c);
 		c.gridy=4;
-		add(scarlet, c);
+		add(playerCheckBoxes[4], c);
 		c.gridy=5;
-		add(white, c);
+		add(playerCheckBoxes[5], c);
 		c.gridy=6;
+		
+		c.gridx = 1;
+		c.gridy=0;
+		add(weaponCheckBoxes[0], c);
+		c.gridy=1;
+		add(weaponCheckBoxes[1], c);
+		c.gridy=2;
+		add(weaponCheckBoxes[2], c);
+		c.gridy=3;
+		add(weaponCheckBoxes[3], c);
+		c.gridy=4;
+		add(weaponCheckBoxes[4], c);
+		c.gridy=5;
+		add(weaponCheckBoxes[5], c);
+		c.gridy=6;
+		
 		
 	}
 	
