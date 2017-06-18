@@ -71,6 +71,7 @@ class notesWindowListener extends WindowAdapter
 		
 		window.gc.setNotes_Players(window.notesController.playerMarked);
 		window.gc.setNotes_Weapons(window.notesController.weaponsMarked);
+		window.gc.setNotes_Rooms(window.notesController.roomsMarked);
 	}
 }
 
@@ -80,9 +81,11 @@ class NotesControl extends JPanel{
 	
 	private JCheckBox[] playerCheckBoxes;
 	private JCheckBox[] weaponCheckBoxes;
+	private JCheckBox[] roomCheckBoxes;
 	
 	boolean[] playerMarked;
 	boolean[] weaponsMarked;
+	boolean[] roomsMarked;
 	
 	private ItemListener checkboxListener = null;
 	
@@ -100,6 +103,7 @@ class NotesControl extends JPanel{
 		
 		playerMarked = gc.getNotedPlayers();
 		weaponsMarked = gc.getNotedWeapons();
+		roomsMarked = gc.getNotedRooms();
 		
 		checkboxListener = new ItemListener(){
 			@Override
@@ -108,7 +112,7 @@ class NotesControl extends JPanel{
 				System.out.println("itemStateChanged");
 				JCheckBox source = (JCheckBox) e.getSource();
 				
-				for(int i = 0; i < 6; i++)
+				for(int i = 0; i < playerCheckBoxes.length; i++)
 				{
 					if(source.equals(playerCheckBoxes[i]))
 					{
@@ -117,11 +121,20 @@ class NotesControl extends JPanel{
 					}
 				}
 				
-				for(int i = 0; i < 6; i++)
+				for(int i = 0; i < weaponCheckBoxes.length; i++)
 				{
 					if(source.equals(weaponCheckBoxes[i]))
 					{
 						weaponsMarked[i] = source.isSelected();
+						return;
+					}
+				}
+				
+				for(int i = 0; i < roomCheckBoxes.length; i++)
+				{
+					if(source.equals(roomCheckBoxes[i]))
+					{
+						roomsMarked[i] = source.isSelected();
 						return;
 					}
 				}
@@ -158,6 +171,29 @@ class NotesControl extends JPanel{
 		weaponCheckBoxes[5]		= new JCheckBox("Revólver", weaponsMarked[5]); 		
 		weaponCheckBoxes[5].addItemListener(checkboxListener);
 		
+		roomCheckBoxes = new JCheckBox[9];
+		
+		
+		roomCheckBoxes[0]		= new JCheckBox("Cozinha", roomsMarked[0]); 	
+		roomCheckBoxes[0].addItemListener(checkboxListener);
+		roomCheckBoxes[1]	= new JCheckBox("Sala de Jantar", roomsMarked[1]); 	
+		roomCheckBoxes[1].addItemListener(checkboxListener);
+		roomCheckBoxes[2]	= new JCheckBox("Sala de Estar", roomsMarked[2]); 	
+		roomCheckBoxes[2].addItemListener(checkboxListener);
+		roomCheckBoxes[3]		= new JCheckBox("Sala de Música", roomsMarked[3]);  	
+		roomCheckBoxes[3].addItemListener(checkboxListener);
+		roomCheckBoxes[4]	= new JCheckBox("Entrada", roomsMarked[4]);	
+		roomCheckBoxes[4].addItemListener(checkboxListener);
+		roomCheckBoxes[5]		= new JCheckBox("Jardim de Inverno", roomsMarked[5]); 		
+		roomCheckBoxes[5].addItemListener(checkboxListener);
+		roomCheckBoxes[6]		= new JCheckBox("Salão de Jogos", roomsMarked[6]); 		
+		roomCheckBoxes[6].addItemListener(checkboxListener);
+		roomCheckBoxes[7]		= new JCheckBox("Biblioteca", roomsMarked[7]); 		
+		roomCheckBoxes[7].addItemListener(checkboxListener);
+		roomCheckBoxes[8]		= new JCheckBox("Escritório", roomsMarked[8]); 		
+		roomCheckBoxes[8].addItemListener(checkboxListener);
+		
+		
 		
 		
 		
@@ -193,6 +229,28 @@ class NotesControl extends JPanel{
 		c.gridy=5;
 		add(weaponCheckBoxes[5], c);
 		c.gridy=6;
+		
+		c.gridx = 2;
+		c.gridy=0;
+		add(roomCheckBoxes[0], c);
+		c.gridy=1;
+		add(roomCheckBoxes[1], c);
+		c.gridy=2;
+		add(roomCheckBoxes[2], c);
+		c.gridy=3;
+		add(roomCheckBoxes[3], c);
+		c.gridy=4;
+		add(roomCheckBoxes[4], c);
+		c.gridy=5;
+		add(roomCheckBoxes[5], c);
+		c.gridy=6;
+		add(roomCheckBoxes[6], c);
+		c.gridy=7;
+		add(roomCheckBoxes[7], c);
+		c.gridy=8;
+		add(roomCheckBoxes[8], c);
+		c.gridy=9;
+		
 		
 		
 	}
