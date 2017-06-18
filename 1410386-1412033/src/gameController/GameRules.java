@@ -7,12 +7,13 @@ import java.util.Random;
 //classe que controlarï¿½ regras do jogo, recebendo aï¿½ï¿½es da GUI atravï¿½s da interface ObservedGame e notificando mudanï¿½as
 class GameRules extends Observable implements ObservedGame
 {
-	private GameRules gr;
 	private boolean[] activePlayers;
 	private int currentTurn;
 	private int die;
 	//diz se dado já foi rolado esse turno
 	private boolean dieWasRolled;
+	
+	private PlayerNotes[] notes;
 	
 	private Random roller;
 	
@@ -23,12 +24,22 @@ class GameRules extends Observable implements ObservedGame
 		dieWasRolled = false;
 		die = 1;
 		activePlayers = activePlayer;
-		for(int i = 0; i <= 5; i++)
+		
+		for(int i = 0; i < ObservedGame.numPlayers; i++)
 		{
 			if(activePlayers[i] == true)
 			{
 				currentTurn = i;
 				break;
+			}
+		}
+				
+		notes = new PlayerNotes[ObservedGame.numPlayers];
+		for(int i = 0; i < ObservedGame.numPlayers; i++)
+		{
+			if(activePlayers[i] == true)
+			{
+				notes[i] = new PlayerNotes(i);
 			}
 		}
 	}
@@ -93,7 +104,53 @@ class GameRules extends Observable implements ObservedGame
 		return dieWasRolled;
 	}
 
-	
-	
+	public boolean[] getNotedPlayers() 
+	{
+		if(activePlayers[currentTurn] == true)
+		{
+			return notes[currentTurn].getEliminatedPlayers();
+		}
+		else return null;
+	}
 
+	public boolean[] getNotedWeapons() {
+		if(activePlayers[currentTurn] == true)
+		{
+			return notes[currentTurn].getEliminatedWeapons();
+		}
+		else return null;
+		
+	}
+
+	public boolean[] getNotedRooms() {
+		if(activePlayers[currentTurn] == true)
+		{
+			return notes[currentTurn].getEliminatedRooms();
+		}
+		else return null;
+	}
+
+	
+	public void setNotes_Players(boolean[] notedPlayers)
+	{
+		notes[currentTurn].setEliminatedPlayers(notedPlayers);
+		
+	}
+
+	
+	public void setNotes_Weapons(boolean[] notedWeapons) 
+	{
+		notes[currentTurn].setEliminatedWeapons(notedWeapons);
+		
+	}
+
+	
+	public void setNotes_Rooms(boolean[] notedRooms) 
+	{
+		notes[currentTurn].setEliminatedRooms(notedRooms);
+		
+	}
+
+	
+	
 }

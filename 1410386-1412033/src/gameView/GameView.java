@@ -5,6 +5,7 @@ import gameController.GameRulesFactory;
 import gameController.ObservedGame;
 
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,6 +28,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import preGame_Controller.NewGameHandler;
+
 //classe view que se registra como observadora e interage com o jogo
 public class GameView extends JFrame implements Observer
 {
@@ -34,6 +37,7 @@ public class GameView extends JFrame implements Observer
 	ObservedGame gc;
 	DieDisplay die;
 	Tabuleiro grid;
+	NotesButtonPanel notesP;
 	
 	//construtor para novo jogo
 	public GameView(String s, boolean[] activePlayer)
@@ -48,11 +52,13 @@ public class GameView extends JFrame implements Observer
 		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
 		grid = new Tabuleiro(activePlayer, gc);
 		die = new DieDisplay(gc);
+		notesP = new NotesButtonPanel(gc);
 		
 		
 		
 		getContentPane().add(grid);
 		getContentPane().add(die);
+		getContentPane().add(notesP);
 		pack();
 		// Inicializa janela no tamanho default no centro da tela.
 		Toolkit tk=Toolkit.getDefaultToolkit();
@@ -69,6 +75,7 @@ public class GameView extends JFrame implements Observer
 		this.repaint();
 		grid.repaint();
 		die.repaint();
+		notesP.repaint();
 	}	
 
 }
@@ -175,6 +182,40 @@ class DieDisplay extends JPanel
 		imgPanel.repaint();
 		
 		
+	}
+	
+	
+}
+
+class NotesButtonPanel extends JPanel
+{
+	// usado para manipular o jogo
+	private ObservedGame gc;
+		
+	public NotesButtonPanel(ObservedGame game)
+	{
+		gc = game;
+		System.out.println("created");
+		
+		
+		//bot�o usado para tentar rolar o dado
+        JButton notesB = new JButton("Ver Notas");
+		notesB.addActionListener(new NotesButtonHandler(gc));
+		
+		add(notesB);
+		
+				
+	}
+	
+	public Dimension getPreferredSize() 
+	{
+        return new Dimension(40, 30);
+    }
+	
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		System.out.println("painted");
 	}
 	
 	
