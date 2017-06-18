@@ -2,10 +2,10 @@ package gameController;
 
 class PlayerNotes 
 {
-	//player È representado por um inteiro
+	//player √© representado por um inteiro
 	private int player;
 	
-	//arrays que indicam se player j· eliminou aquele jogador/arma/local como suspeitos
+	//arrays que indicam se player j√° eliminou aquele jogador/arma/local como suspeitos
 	
 	private boolean[] eliminatedPlayers;
 	private boolean[] eliminatedWeapons;
@@ -99,4 +99,4 @@ class PlayerNotes
 		eliminatedPlayers[i] = true;
 	}	
 	
-}
+} 

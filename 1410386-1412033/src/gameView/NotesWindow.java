@@ -33,7 +33,7 @@ public class NotesWindow extends JFrame
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 		
-		//adiciona windows listener para rodar função quando fechar a janela
+		//adiciona windows listener para rodar funÃ§Ã£o quando fechar a janela
 		this.addWindowListener(new notesWindowListener(this));
 		
 		notesController = new NotesControl(gc);
@@ -93,7 +93,7 @@ class NotesControl extends JPanel{
 	NotesControl(ObservedGame game)
 	{
 		
-		//Define layout do painel contendo os botÃµes
+		//Define layout do painel contendo os botÃƒÂµes
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -166,9 +166,9 @@ class NotesControl extends JPanel{
 		weaponCheckBoxes[2].addItemListener(checkboxListener);
 		weaponCheckBoxes[3]		= new JCheckBox("Chave Inglesa", weaponsMarked[3]);  	
 		weaponCheckBoxes[3].addItemListener(checkboxListener);
-		weaponCheckBoxes[4]	= new JCheckBox("Castiçal", weaponsMarked[4]);	
+		weaponCheckBoxes[4]	= new JCheckBox("CastiÃ§al", weaponsMarked[4]);	
 		weaponCheckBoxes[4].addItemListener(checkboxListener);
-		weaponCheckBoxes[5]		= new JCheckBox("Revólver", weaponsMarked[5]); 		
+		weaponCheckBoxes[5]		= new JCheckBox("RevÃ³lver", weaponsMarked[5]); 		
 		weaponCheckBoxes[5].addItemListener(checkboxListener);
 		
 		roomCheckBoxes = new JCheckBox[9];
@@ -180,17 +180,17 @@ class NotesControl extends JPanel{
 		roomCheckBoxes[1].addItemListener(checkboxListener);
 		roomCheckBoxes[2]	= new JCheckBox("Sala de Estar", roomsMarked[2]); 	
 		roomCheckBoxes[2].addItemListener(checkboxListener);
-		roomCheckBoxes[3]		= new JCheckBox("Sala de Música", roomsMarked[3]);  	
+		roomCheckBoxes[3]		= new JCheckBox("Sala de MÃºsica", roomsMarked[3]);  	
 		roomCheckBoxes[3].addItemListener(checkboxListener);
 		roomCheckBoxes[4]	= new JCheckBox("Entrada", roomsMarked[4]);	
 		roomCheckBoxes[4].addItemListener(checkboxListener);
 		roomCheckBoxes[5]		= new JCheckBox("Jardim de Inverno", roomsMarked[5]); 		
 		roomCheckBoxes[5].addItemListener(checkboxListener);
-		roomCheckBoxes[6]		= new JCheckBox("Salão de Jogos", roomsMarked[6]); 		
+		roomCheckBoxes[6]		= new JCheckBox("SalÃ£o de Jogos", roomsMarked[6]); 		
 		roomCheckBoxes[6].addItemListener(checkboxListener);
 		roomCheckBoxes[7]		= new JCheckBox("Biblioteca", roomsMarked[7]); 		
 		roomCheckBoxes[7].addItemListener(checkboxListener);
-		roomCheckBoxes[8]		= new JCheckBox("Escritório", roomsMarked[8]); 		
+		roomCheckBoxes[8]		= new JCheckBox("EscritÃ³rio", roomsMarked[8]); 		
 		roomCheckBoxes[8].addItemListener(checkboxListener);
 		
 		

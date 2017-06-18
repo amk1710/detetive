@@ -7,14 +7,14 @@ import java.util.Random;
 //classe que controlarï¿½ regras do jogo, recebendo aï¿½ï¿½es da GUI atravï¿½s da interface ObservedGame e notificando mudanï¿½as
 class GameRules extends Observable implements ObservedGame
 {
+	private GameRules gr;
 	private boolean[] activePlayers;
 	private int currentTurn;
 	private int die;
-	//diz se dado já foi rolado esse turno
+	//diz se dado jï¿½ foi rolado esse turno
 	private boolean dieWasRolled;
 	
 	private PlayerNotes[] notes;
-	
 	private Random roller;
 	
 	//construtor para novo jogo
@@ -24,8 +24,7 @@ class GameRules extends Observable implements ObservedGame
 		dieWasRolled = false;
 		die = 1;
 		activePlayers = activePlayer;
-		
-		for(int i = 0; i < ObservedGame.numPlayers; i++)
+		for(int i = 0; i <= 5; i++)
 		{
 			if(activePlayers[i] == true)
 			{
@@ -33,7 +32,7 @@ class GameRules extends Observable implements ObservedGame
 				break;
 			}
 		}
-				
+		
 		notes = new PlayerNotes[ObservedGame.numPlayers];
 		for(int i = 0; i < ObservedGame.numPlayers; i++)
 		{
@@ -64,7 +63,7 @@ class GameRules extends Observable implements ObservedGame
 	
 	public void rollDie()
 	{
-		//se dado já foi rolado essa rodada, não faz nada
+		//se dado jï¿½ foi rolado essa rodada, nï¿½o faz nada
 		if(dieWasRolled)
 		{
 			return;
@@ -152,5 +151,5 @@ class GameRules extends Observable implements ObservedGame
 	}
 
 	
-	
+
 }
