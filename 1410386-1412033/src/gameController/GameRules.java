@@ -1,20 +1,32 @@
 package gameController;
 
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
+import java.util.Vector;
 
-//classe que controlarï¿½ regras do jogo, recebendo aï¿½ï¿½es da GUI atravï¿½s da interface ObservedGame e notificando mudanï¿½as
+//classe que controlam regras do jogo, recebendo ações da GUI através da interface ObservedGame e notificando mudanças
 class GameRules extends Observable implements ObservedGame
 {
 	private GameRules gr;
+	
+	private Tabuleiro tabuleiro;
+	
 	private boolean[] activePlayers;
 	private int currentTurn;
 	private int die;
-	//diz se dado jï¿½ foi rolado esse turno
+	//diz se dado já foi rolado esse turno
 	private boolean dieWasRolled;
 	
 	private PlayerNotes[] notes;
+	
+	// cartas de cada jogador
+	private Vector<Card>[] playerCards;
+	
+	//cartas no pacote confidencial
+	private Card[] answer;
+	
 	private Random roller;
 	
 	//construtor para novo jogo
@@ -24,6 +36,8 @@ class GameRules extends Observable implements ObservedGame
 		dieWasRolled = false;
 		die = 1;
 		activePlayers = activePlayer;
+		tabuleiro = new Tabuleiro();
+		
 		for(int i = 0; i <= 5; i++)
 		{
 			if(activePlayers[i] == true)
@@ -41,6 +55,8 @@ class GameRules extends Observable implements ObservedGame
 				notes[i] = new PlayerNotes(i);
 			}
 		}
+		
+		dealCards();
 	}
 	
 	//construtor para jogo salvo
@@ -150,6 +166,86 @@ class GameRules extends Observable implements ObservedGame
 		
 	}
 
+	public Tabuleiro getTabuleiro() {
+		return tabuleiro;
+	}
+
+	//funções auxiliares
+	
+	public Card[] getPlayerHand(int i) 
+	{
+		return (Card[]) playerCards[i].toArray();
+	}
+	
+	//função distribui as cartas de jogo pelos jogadores
+	private void dealCards()
+	{
+		Vector<Card> allCards = new Vector<Card>();
+		Vector<Card> suspects = new Vector<Card>();
+		Vector<Card> weapons = new Vector<Card>();
+		Vector<Card> rooms = new Vector<Card>();
+		
+		for(int j = 0;j < ObservedGame.numPlayers;j++)
+		{
+			suspects.add(new Card(CardType.SUSPECT, j));
+		}
+		
+		for(int j = 0; j < ObservedGame.numWeapons;j++)
+		{
+			weapons.add(new Card(CardType.WEAPON, j));
+		}
+		
+		for(int j = 0; j < ObservedGame.numRooms;j++)
+		{
+			rooms.add(new Card(CardType.ROOM, j));
+		}
+		
+		Collections.shuffle(suspects);
+		Collections.shuffle(weapons);
+		Collections.shuffle(rooms);
+		
+		//tira três cartas para o envelope confidencial
+		answer = new Card[3];
+		answer[0] = suspects.remove(suspects.size() - 1);
+		answer[1] = weapons.remove(weapons.size() - 1);
+		answer[2] = rooms.remove(rooms.size() - 1);
+		
+		allCards.addAll(suspects);
+		allCards.addAll(weapons);
+		allCards.addAll(rooms);
+		
+		
+		//distribui demais cartas entre os jogadores
+		Collections.shuffle(allCards);
+			
+		playerCards = new Vector[ObservedGame.numPlayers];
+		for (int i = 0; i < ObservedGame.numPlayers; i++)
+		{
+			playerCards[i] = new Vector<Card>();
+		}
+		
+		int i = 0;
+		while(!allCards.isEmpty())
+		{
+			if(activePlayers[i])
+			{
+				Card temp = allCards.remove(allCards.size() - 1);
+				playerCards[i].add(temp);
+				//marca carta nas notas do jogador
+				notes[i].eliminateCard(temp);
+								
+			}
+			i = (i+1) % ObservedGame.numPlayers;
+		}
+		
+		
+		
+	}
+
+	
 	
 
 }
+
+//uma carta tem um identificar de tipo(suspeito, arma ou comodo) e um identificador(qual suspeito/arma/comodo). Ambos são imutáveis
+

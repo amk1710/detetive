@@ -91,12 +91,31 @@ class PlayerNotes
 	
 	public void eliminateWeapon(int i)
 	{
-		eliminatedPlayers[i] = true;
+		eliminatedWeapons[i] = true;
 	}
 	
 	public void eliminateRoom(int i)
 	{
-		eliminatedPlayers[i] = true;
-	}	
+		eliminatedRooms[i] = true;
+	}
+	
+	//recebe carta e elimina suspeito/arma/comodo equivalente
+	public void eliminateCard(Card c)
+	{
+		if(c.type == CardType.SUSPECT)
+		{
+			eliminatedPlayers[c.id] = true;
+		}
+		
+		if(c.type == CardType.WEAPON)
+		{
+			eliminatedWeapons[c.id] = true;
+		}
+		
+		if(c.type == CardType.ROOM)
+		{
+			eliminatedRooms[c.id] = true;
+		}
+	}
 	
 } 

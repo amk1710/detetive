@@ -8,6 +8,7 @@ public interface ObservedGame
 	public static final int minPlayers = 2;
 	public static final int numPlayers = 6;
 	public static final int numWeapons = 6;
+	public static final int numRooms   = 9;
 	
 	public void addObserver(Observer o);
 	
@@ -31,6 +32,9 @@ public interface ObservedGame
 	
 	public void endTurn();
 	
+	public Card[] getPlayerHand(int i);
 	
+	//temporária! Quebra arquitetura
+	public Tabuleiro getTabuleiro();
 	
 }

@@ -252,7 +252,7 @@ class PainelTabuleiro extends JPanel implements Observer
 		this.playerActive = playerActive;
 		this.gc = game;
 		this.gc.addObserver(this);
-		this.tabuleiro = new Tabuleiro();
+		this.tabuleiro = gc.getTabuleiro();
 
 		this.addComponentListener(new ComponentListener(){
 			public void componentHidden(ComponentEvent e) {
