@@ -13,15 +13,17 @@ public class NotesButtonHandler implements ActionListener
 {
 
 	ObservedGame gc;
+	GameView gv;
 	
-	public NotesButtonHandler(ObservedGame game)
+	public NotesButtonHandler(ObservedGame game, GameView gameview)
 	{
 		gc = game;
+		gv = gameview;
 	}
 	
 	public void actionPerformed(ActionEvent arg0) 
 	{
-		NotesWindow notes = new NotesWindow("Minhas notas", gc);
+		NotesWindow notes = new NotesWindow("Minhas notas", gc, gv);
 		notes.setVisible(true);
 	}
 

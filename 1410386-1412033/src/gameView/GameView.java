@@ -36,6 +36,11 @@ public class GameView extends JFrame implements Observer
 	PainelTabuleiro grid;
 	NotesButtonPanel notesP;
 	
+	String[] playerNames = {"Reverendo Green", "Coronel Mustard", "Senhora Peacock", "Professor Plum", "Senhorita Scarlet","Senhora White"};
+	String[] weaponNames = {"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver"};
+	String[] roomNames = {"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de Música", "Entrada", "Jardim de Inverno", "Salão de Jogos", "Biblioteca", "Escritório"};
+	
+	
 	//construtor para novo jogo
 	public GameView(String s, boolean[] activePlayer)
 	{
@@ -49,7 +54,7 @@ public class GameView extends JFrame implements Observer
 		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
 		die = new DieDisplay(gc);
 		grid = new PainelTabuleiro(activePlayer, gc);
-		notesP = new NotesButtonPanel(gc);
+		notesP = new NotesButtonPanel(gc, this);
 		
 		
 		getContentPane().add(die);
@@ -208,16 +213,17 @@ class NotesButtonPanel extends JPanel
 {
 	// usado para manipular o jogo
 	private ObservedGame gc;
+	private GameView gv;
 		
-	public NotesButtonPanel(ObservedGame game)
+	public NotesButtonPanel(ObservedGame game, GameView gameview)
 	{
 		gc = game;
-		System.out.println("created");
+		gv = gameview;
 		
 		
-		//botï¿½o usado para tentar rolar o dado
+		//botão usado para abrir a janela das notas
         JButton notesB = new JButton("Ver Notas");
-		notesB.addActionListener(new NotesButtonHandler(gc));
+		notesB.addActionListener(new NotesButtonHandler(gc, gv));
 		
 		add(notesB);
 		
@@ -232,7 +238,37 @@ class NotesButtonPanel extends JPanel
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		System.out.println("painted");
+	}
+	
+	
+}
+
+class CardsButtonPanel extends JPanel
+{
+	// usado para manipular o jogo
+	
+	private GameView gv;
+		
+	public CardsButtonPanel(GameView gameview)
+	{
+		gv = gameview;		
+		
+		//botão usado para abrir a janela com as cartas do jogador
+        //JButton notesB = new JButton("Ver Notas");
+		//notesB.addActionListener(new NotesButtonHandler(gc, gv));
+		
+		//add(notesB);
+		
+	}
+	
+	public Dimension getPreferredSize() 
+	{
+        return new Dimension(40, 30);
+    }
+	
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
 	}
 	
 	

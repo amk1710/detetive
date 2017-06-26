@@ -25,18 +25,20 @@ public class NotesWindow extends JFrame
 	NotesControl notesController;
 	
 	ObservedGame gc;
+	GameView gv;
 	
-	public NotesWindow(String s, ObservedGame game)
+	public NotesWindow(String s, ObservedGame game, GameView gameview)
 	{
 		super (s);
 		gc = game;
+		gv = gameview;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 		
 		//adiciona windows listener para rodar função quando fechar a janela
 		this.addWindowListener(new notesWindowListener(this));
 		
-		notesController = new NotesControl(gc);
+		notesController = new NotesControl(gc, gv);
 		setContentPane(notesController);
 		pack();
 		
@@ -78,6 +80,7 @@ class notesWindowListener extends WindowAdapter
 class NotesControl extends JPanel{
 	
 	ObservedGame gc;
+	GameView gv;
 	
 	private JCheckBox[] playerCheckBoxes;
 	private JCheckBox[] weaponCheckBoxes;
@@ -90,7 +93,7 @@ class NotesControl extends JPanel{
 	private ItemListener checkboxListener = null;
 	
 	
-	NotesControl(ObservedGame game)
+	NotesControl(ObservedGame game, GameView gameview)
 	{
 		
 		//Define layout do painel contendo os botÃµes
@@ -100,6 +103,7 @@ class NotesControl extends JPanel{
 		c.insets = new Insets(0, 0, 0, 0);	
 		
 		gc = game;
+		gv = gameview;
 		
 		playerMarked = gc.getNotedPlayers();
 		weaponsMarked = gc.getNotedWeapons();
@@ -143,60 +147,29 @@ class NotesControl extends JPanel{
 		
 		playerCheckBoxes = new JCheckBox[6];
 		
-		playerCheckBoxes[0]		= new JCheckBox("Reverendo Green", playerMarked[0]); 	
-		playerCheckBoxes[0].addItemListener(checkboxListener);
-		playerCheckBoxes[1]	= new JCheckBox("Coronel Mustard", playerMarked[1]); 	
-		playerCheckBoxes[1].addItemListener(checkboxListener);
-		playerCheckBoxes[2]	= new JCheckBox("Senhora Peacock", playerMarked[2]); 	
-		playerCheckBoxes[2].addItemListener(checkboxListener);
-		playerCheckBoxes[3]		= new JCheckBox("Professor Plum", playerMarked[3]);  	
-		playerCheckBoxes[3].addItemListener(checkboxListener);
-		playerCheckBoxes[4]	= new JCheckBox("Senhorita Scarlet", playerMarked[4]);	
-		playerCheckBoxes[4].addItemListener(checkboxListener);
-		playerCheckBoxes[5]		= new JCheckBox("Senhora White", playerMarked[5]); 		
-		playerCheckBoxes[5].addItemListener(checkboxListener);
+		for(int i = 0; i < gc.numPlayers; i++)
+		{
+			playerCheckBoxes[i]		= new JCheckBox(gv.playerNames[i], playerMarked[i]);
+			playerCheckBoxes[i].addItemListener(checkboxListener);
+		}
 		
 		weaponCheckBoxes = new JCheckBox[6];
 		
-		weaponCheckBoxes[0]		= new JCheckBox("Corda", weaponsMarked[0]); 	
-		weaponCheckBoxes[0].addItemListener(checkboxListener);
-		weaponCheckBoxes[1]	= new JCheckBox("Cano de Chumbo", weaponsMarked[1]); 	
-		weaponCheckBoxes[1].addItemListener(checkboxListener);
-		weaponCheckBoxes[2]	= new JCheckBox("Faca", weaponsMarked[2]); 	
-		weaponCheckBoxes[2].addItemListener(checkboxListener);
-		weaponCheckBoxes[3]		= new JCheckBox("Chave Inglesa", weaponsMarked[3]);  	
-		weaponCheckBoxes[3].addItemListener(checkboxListener);
-		weaponCheckBoxes[4]	= new JCheckBox("Castiçal", weaponsMarked[4]);	
-		weaponCheckBoxes[4].addItemListener(checkboxListener);
-		weaponCheckBoxes[5]		= new JCheckBox("Revólver", weaponsMarked[5]); 		
-		weaponCheckBoxes[5].addItemListener(checkboxListener);
+		for(int i = 0; i < gc.numWeapons; i++)
+		{
+			weaponCheckBoxes[i]		= new JCheckBox(gv.weaponNames[i], weaponsMarked[i]);
+			weaponCheckBoxes[i].addItemListener(checkboxListener);
+		}
+		
 		
 		roomCheckBoxes = new JCheckBox[9];
 		
-		
-		roomCheckBoxes[0]		= new JCheckBox("Cozinha", roomsMarked[0]); 	
-		roomCheckBoxes[0].addItemListener(checkboxListener);
-		roomCheckBoxes[1]	= new JCheckBox("Sala de Jantar", roomsMarked[1]); 	
-		roomCheckBoxes[1].addItemListener(checkboxListener);
-		roomCheckBoxes[2]	= new JCheckBox("Sala de Estar", roomsMarked[2]); 	
-		roomCheckBoxes[2].addItemListener(checkboxListener);
-		roomCheckBoxes[3]		= new JCheckBox("Sala de Música", roomsMarked[3]);  	
-		roomCheckBoxes[3].addItemListener(checkboxListener);
-		roomCheckBoxes[4]	= new JCheckBox("Entrada", roomsMarked[4]);	
-		roomCheckBoxes[4].addItemListener(checkboxListener);
-		roomCheckBoxes[5]		= new JCheckBox("Jardim de Inverno", roomsMarked[5]); 		
-		roomCheckBoxes[5].addItemListener(checkboxListener);
-		roomCheckBoxes[6]		= new JCheckBox("Salão de Jogos", roomsMarked[6]); 		
-		roomCheckBoxes[6].addItemListener(checkboxListener);
-		roomCheckBoxes[7]		= new JCheckBox("Biblioteca", roomsMarked[7]); 		
-		roomCheckBoxes[7].addItemListener(checkboxListener);
-		roomCheckBoxes[8]		= new JCheckBox("Escritório", roomsMarked[8]); 		
-		roomCheckBoxes[8].addItemListener(checkboxListener);
-		
-		
-		
-		
-		
+		for(int i = 0; i < gc.numRooms; i++)
+		{
+			roomCheckBoxes[i]		= new JCheckBox(gv.roomNames[i], roomsMarked[i]);
+			roomCheckBoxes[i].addItemListener(checkboxListener);
+		}
+				
 		c.weightx = 1;
 		c.weighty = 1;
 		
