@@ -12,17 +12,19 @@ public class CardImages
 {
 	//array de arrays, para conter as imagens de jogares/armas/quartos respectivamente
 	//porque não podem ser final?
-	private static  BufferedImage playerImages[];
-	private static  BufferedImage weaponImages[];
-	private static  BufferedImage roomImages[];
+	private final static  BufferedImage playerImages[] = new BufferedImage[6];
+	private final static  BufferedImage weaponImages[] = new BufferedImage[6];
+	private final static  BufferedImage roomImages[] =  new BufferedImage[9];
 	private static  BufferedImage NaN;
 	
 	//private static final BufferedImage NaN;
 	
 	public static BufferedImage getImage(Card c)
 	{
+		System.out.println(c.type.toString() + c.id);
 		try
 		{
+			
 			switch(c.type)
 			{
 				case SUSPECT: 
@@ -44,41 +46,41 @@ public class CardImages
 		try
 		{
 			
+			
 			//imagem nula, usada em casos de exceção
-			NaN = ImageIO.read(new File("assets/assets/NaN"));
+			NaN = ImageIO.read(new File("assets/NaN.jpg"));
 			
 			//primeiro array contem imagens de jogadores
-			playerImages = new BufferedImage[6];
 			//"Reverendo Green", "Coronel Mustard", "Senhora Peacock", "Professor Plum", "Senhorita Scarlet","Senhora White"
-			playerImages[0] = ImageIO.read(new File("assets/assets/Suspeitos/green"));
-			playerImages[1] = ImageIO.read(new File("assets/assets/Suspeitos/mustard"));
-			playerImages[2] = ImageIO.read(new File("assets/assets/Suspeitos/peacock"));
-			playerImages[3] = ImageIO.read(new File("assets/assets/Suspeitos/plum"));
-			playerImages[4] = ImageIO.read(new File("assets/assets/Suspeitos/scarlet"));
-			playerImages[5] = ImageIO.read(new File("assets/assets/Suspeitos/white"));
+			playerImages[0] = ImageIO.read(new File("assets/Suspeitos/green.jpg"));
+			playerImages[1] = ImageIO.read(new File("assets/Suspeitos/mustard.jpg"));
+			playerImages[2] = ImageIO.read(new File("assets/Suspeitos/peacock.jpg"));
+			playerImages[3] = ImageIO.read(new File("assets/Suspeitos/plum.jpg"));
+			playerImages[4] = ImageIO.read(new File("assets/Suspeitos/scarlet.jpg"));
+			playerImages[5] = ImageIO.read(new File("assets/Suspeitos/white.jpg"));
+			
+			
 			
 			//segundo contem armas
-			weaponImages = new BufferedImage[6];
 			//"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver"
-			weaponImages[0] = ImageIO.read(new File("assets/assets/Armas/Corda"));
-			weaponImages[1] = ImageIO.read(new File("assets/assets/Armas/Cano"));
-			weaponImages[2] = ImageIO.read(new File("assets/assets/Armas/Faca"));
-			weaponImages[3] = ImageIO.read(new File("assets/assets/Armas/ChaveInglesa"));
-			weaponImages[4] = ImageIO.read(new File("assets/assets/Armas/Castical"));
-			weaponImages[5] = ImageIO.read(new File("assets/assets/Armas/Revolver"));
+			weaponImages[0] = ImageIO.read(new File("assets/Armas/Corda.jpg"));
+			weaponImages[1] = ImageIO.read(new File("assets/Armas/Cano.jpg"));
+			weaponImages[2] = ImageIO.read(new File("assets/Armas/Faca.jpg"));
+			weaponImages[3] = ImageIO.read(new File("assets/Armas/ChaveInglesa.jpg"));
+			weaponImages[4] = ImageIO.read(new File("assets/Armas/Castical.jpg"));
+			weaponImages[5] = ImageIO.read(new File("assets/Armas/Revolver.jpg"));
 			
-			roomImages = new BufferedImage[9];
+			
 			//"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de Música", "Entrada", "Jardim de Inverno", "Salão de Jogos", "Biblioteca", "Escritório"
-			roomImages[0] = ImageIO.read(new File("assets/assets/Comodos/Cozinha"));
-			roomImages[1] = ImageIO.read(new File("assets/assets/Comodos/SalaDeJantar"));
-			roomImages[2] = ImageIO.read(new File("assets/assets/Comodos/SalaDeEstar"));
-			roomImages[3] = ImageIO.read(new File("assets/assets/Comodos/SalaDeMusica"));
-			roomImages[4] = ImageIO.read(new File("assets/assets/Comodos/Entrada"));
-			roomImages[5] = ImageIO.read(new File("assets/assets/Comodos/JardimInverno"));
-			roomImages[6] = ImageIO.read(new File("assets/assets/Comodos/SalaoDeJogos"));
-			roomImages[7] = ImageIO.read(new File("assets/assets/Comodos/Biblioteca"));
-			roomImages[8] = ImageIO.read(new File("assets/assets/Comodos/Escritorio"));
-			
+			roomImages[0] = ImageIO.read(new File("assets/Comodos/Cozinha.jpg"));
+			roomImages[1] = ImageIO.read(new File("assets/Comodos/SalaDeJantar.jpg"));
+			roomImages[2] = ImageIO.read(new File("assets/Comodos/SalaDeEstar.jpg"));
+			roomImages[3] = ImageIO.read(new File("assets/Comodos/SalaDeMusica.jpg"));
+			roomImages[4] = ImageIO.read(new File("assets/Comodos/Entrada.jpg"));
+			roomImages[5] = ImageIO.read(new File("assets/Comodos/JardimInverno.jpg"));
+			roomImages[6] = ImageIO.read(new File("assets/Comodos/SalaoDeJogos.jpg"));
+			roomImages[7] = ImageIO.read(new File("assets/Comodos/Biblioteca.jpg"));
+			roomImages[8] = ImageIO.read(new File("assets/Comodos/Escritorio.jpg"));
 			
 			
 			
@@ -88,6 +90,5 @@ public class CardImages
 			System.out.println("Incapaz de abrir imagem. Erro:" + e.getMessage());
 			System.exit(1);
 		}
-		
 	}
 }

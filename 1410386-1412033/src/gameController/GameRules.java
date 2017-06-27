@@ -13,6 +13,7 @@ class GameRules extends Observable implements ObservedGame
 	
 	private Tabuleiro tabuleiro;
 	
+	
 	private boolean[] activePlayers;
 	private int currentTurn;
 	private int die;
@@ -37,6 +38,7 @@ class GameRules extends Observable implements ObservedGame
 		die = 1;
 		activePlayers = activePlayer;
 		tabuleiro = new Tabuleiro();
+		
 		
 		for(int i = 0; i <= 5; i++)
 		{
@@ -174,7 +176,10 @@ class GameRules extends Observable implements ObservedGame
 	
 	public Card[] getPlayerHand(int i) 
 	{
-		return (Card[]) playerCards[i].toArray();
+		Card[] hand = new Card[1];
+		hand = playerCards[i].toArray(hand);
+		System.out.println(hand[0].toString());
+		return hand;
 	}
 	
 	//função distribui as cartas de jogo pelos jogadores
@@ -242,10 +247,44 @@ class GameRules extends Observable implements ObservedGame
 		
 	}
 
+	public Card palpitar(int suspectID, int weaponID, int roomID) 
+	{
+		//checa se há alguma carta na própria mão
+		for(Card c: playerCards[currentTurn])
+		{
+			if(	(c.type == CardType.SUSPECT && c.id == suspectID) 
+				||	(c.type == CardType.WEAPON &&  c.id == weaponID)
+				||	(c.type == CardType.ROOM &&  c.id == roomID))
+				{
+					notes[currentTurn].eliminateCard(c);
+					return c;
+				}
+		}
+		
+		//checa se há alguma carta em alguma outra mão
+		int i = (currentTurn+1)%6;
+		while(i != (currentTurn+1)%6)
+		{
+			for(Card c: playerCards[i])
+			{
+				if(	(c.type == CardType.SUSPECT && c.id == suspectID) 
+					||	(c.type == CardType.WEAPON &&  c.id == weaponID)
+					||	(c.type == CardType.ROOM &&  c.id == roomID)) 
+					{
+						notes[currentTurn].eliminateCard(c);
+						return c;
+					}
+			}
+			i = (i+1)%6;
+		}
+		
+		//se nenhuma está em nenhuma mão, as três estão no envelope confidencial
+		return null;
+	}
+
 	
 	
 
 }
 
-//uma carta tem um identificar de tipo(suspeito, arma ou comodo) e um identificador(qual suspeito/arma/comodo). Ambos são imutáveis
 

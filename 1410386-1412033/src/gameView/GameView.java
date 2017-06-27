@@ -1,6 +1,7 @@
 package gameView;
 
 
+import gameController.Card;
 import gameController.GameRulesFactory;
 import gameController.ObservedGame;
 import gameController.Tabuleiro;
@@ -32,13 +33,16 @@ public class GameView extends JFrame implements Observer
 {
 
 	ObservedGame gc;
-	DieDisplay die;
-	PainelTabuleiro grid;
-	NotesButtonPanel notesP;
+	private DieDisplay die;
+	private PainelTabuleiro grid;
+	private NotesButtonPanel notesP;
+	private CardsButtonPanel cardsP;
 	
 	String[] playerNames = {"Reverendo Green", "Coronel Mustard", "Senhora Peacock", "Professor Plum", "Senhorita Scarlet","Senhora White"};
 	String[] weaponNames = {"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver"};
 	String[] roomNames = {"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de Música", "Entrada", "Jardim de Inverno", "Salão de Jogos", "Biblioteca", "Escritório"};
+	
+	
 	
 	
 	//construtor para novo jogo
@@ -55,11 +59,13 @@ public class GameView extends JFrame implements Observer
 		die = new DieDisplay(gc);
 		grid = new PainelTabuleiro(activePlayer, gc);
 		notesP = new NotesButtonPanel(gc, this);
+		cardsP = new CardsButtonPanel(this);
 		
 		
 		getContentPane().add(die);
 		getContentPane().add(grid);
 		getContentPane().add(notesP);
+		getContentPane().add(cardsP);
 		pack();
 		// Inicializa janela no tamanho default no centro da tela.
 		Toolkit tk=Toolkit.getDefaultToolkit();
@@ -68,6 +74,7 @@ public class GameView extends JFrame implements Observer
 		int	sa=screenSize.height;
 		
 		setBounds(0,0,(int)getContentPane().getPreferredSize().getWidth(),(int)getContentPane().getPreferredSize().getHeight());
+		
 				
 	}
 	
@@ -245,7 +252,7 @@ class NotesButtonPanel extends JPanel
 
 class CardsButtonPanel extends JPanel
 {
-	// usado para manipular o jogo
+	// usado para ver as cartas
 	
 	private GameView gv;
 		
@@ -254,10 +261,10 @@ class CardsButtonPanel extends JPanel
 		gv = gameview;		
 		
 		//botão usado para abrir a janela com as cartas do jogador
-        //JButton notesB = new JButton("Ver Notas");
-		//notesB.addActionListener(new NotesButtonHandler(gc, gv));
+        JButton myCardsB = new JButton("Ver Minhas Cartas");
+        myCardsB.addActionListener(new MyCardsButtonHandler(gv));
 		
-		//add(notesB);
+		add(myCardsB);
 		
 	}
 	

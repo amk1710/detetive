@@ -34,7 +34,9 @@ public interface ObservedGame
 	
 	public Card[] getPlayerHand(int i);
 	
-	//temporária! Quebra arquitetura
+	public Card palpitar(int suspectID, int weaponID, int roomID);
+	
+	//temporária! Quebra arquitetura?
 	public Tabuleiro getTabuleiro();
 	
 }

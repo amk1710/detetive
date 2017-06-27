@@ -19,8 +19,8 @@ public class Tabuleiro {
 	
 	private int  matriz_numColunas;
 	private int  matriz_numLinhas;
-	private int  matriz_deslocamentoColunas;	 
-	private int  matriz_deslocamentoLinhas;	
+	private int  matriz_deslocamentoColunas;
+	private int  matriz_deslocamentoLinhas;
 	private int  matriz_larguraColuna;
 	private int  matriz_alturaLinha;
 
