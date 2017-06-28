@@ -21,17 +21,19 @@ public class CardImages
 	
 	public static BufferedImage getImage(Card c)
 	{
-		System.out.println(c.type.toString() + c.id);
 		try
 		{
 			
 			switch(c.type)
 			{
 				case SUSPECT: 
+					System.out.println(playerImages[c.id].toString());
 					return playerImages[c.id];
 				case WEAPON:
+					System.out.println(weaponImages[c.id].toString());
 					return weaponImages[c.id];
 				case ROOM:
+					System.out.println(roomImages[c.id].toString());
 					return roomImages[c.id];
 			}
 		}catch(IndexOutOfBoundsException e)

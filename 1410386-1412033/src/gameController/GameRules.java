@@ -19,6 +19,7 @@ class GameRules extends Observable implements ObservedGame
 	private int die;
 	//diz se dado já foi rolado esse turno
 	private boolean dieWasRolled;
+	private boolean hasGuessed;
 	
 	private PlayerNotes[] notes;
 	
@@ -38,6 +39,7 @@ class GameRules extends Observable implements ObservedGame
 		die = 1;
 		activePlayers = activePlayer;
 		tabuleiro = new Tabuleiro();
+		hasGuessed = false;
 		
 		
 		for(int i = 0; i <= 5; i++)
@@ -108,6 +110,7 @@ class GameRules extends Observable implements ObservedGame
 			}
 		}
 		dieWasRolled = false;
+		hasGuessed = false;
 		notifyView();
 	}
 
@@ -178,7 +181,7 @@ class GameRules extends Observable implements ObservedGame
 	{
 		Card[] hand = new Card[1];
 		hand = playerCards[i].toArray(hand);
-		System.out.println(hand[0].toString());
+		//System.out.println(hand[0].toString());
 		return hand;
 	}
 	
@@ -247,8 +250,9 @@ class GameRules extends Observable implements ObservedGame
 		
 	}
 
-	public Card palpitar(int suspectID, int weaponID, int roomID) 
+	public Card guess(int suspectID, int weaponID, int roomID) 
 	{
+		hasGuessed = true;
 		//checa se há alguma carta na própria mão
 		for(Card c: playerCards[currentTurn])
 		{
@@ -282,7 +286,10 @@ class GameRules extends Observable implements ObservedGame
 		return null;
 	}
 
-	
+	public boolean getHasGuessed()
+	{
+		return hasGuessed;
+	}
 	
 
 }

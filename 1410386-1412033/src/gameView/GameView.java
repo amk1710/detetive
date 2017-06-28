@@ -42,9 +42,6 @@ public class GameView extends JFrame implements Observer
 	String[] weaponNames = {"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver"};
 	String[] roomNames = {"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de Música", "Entrada", "Jardim de Inverno", "Salão de Jogos", "Biblioteca", "Escritório"};
 	
-	
-	
-	
 	//construtor para novo jogo
 	public GameView(String s, boolean[] activePlayer)
 	{
@@ -57,7 +54,7 @@ public class GameView extends JFrame implements Observer
 		
 		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
 		die = new DieDisplay(gc);
-		grid = new PainelTabuleiro(activePlayer, gc);
+		grid = new PainelTabuleiro(activePlayer, gc, this);
 		notesP = new NotesButtonPanel(gc, this);
 		cardsP = new CardsButtonPanel(this);
 		
@@ -281,21 +278,25 @@ class CardsButtonPanel extends JPanel
 	
 }
 
+
+
 class PainelTabuleiro extends JPanel implements Observer
 {
 	private ObservedGame gc = null;
+	private GameView gv;
 	private Tabuleiro tabuleiro = null;
 	
 	//Players info
 	private boolean[] playerActive = null;
 	
-	public PainelTabuleiro(boolean[] playerActive, ObservedGame game)
+	public PainelTabuleiro(boolean[] playerActive, ObservedGame game, GameView gameview)
 	{
 	
 		this.playerActive = playerActive;
 		this.gc = game;
 		this.gc.addObserver(this);
 		this.tabuleiro = gc.getTabuleiro();
+		this.gv = gameview;
 
 		this.addComponentListener(new ComponentListener(){
 			public void componentHidden(ComponentEvent e) {
@@ -318,7 +319,15 @@ class PainelTabuleiro extends JPanel implements Observer
 					tabuleiro.removeAlcance();
 					//Manda repintar
 					repaint();
-					//Passa a vez
+					//abre janela de palpite
+					//TO-DO janela de palpite só deve ser aberta se jogador entrar em um comodo
+					//if()
+					//{
+						GuessWindow gw = new GuessWindow("Palpite", gv);
+						gw.setVisible(true);
+					//}
+					
+					//Passa a vez. Agora? Melhor por um botão né?
 					gc.endTurn();
 				}
 			}

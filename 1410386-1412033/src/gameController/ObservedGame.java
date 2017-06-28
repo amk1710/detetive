@@ -34,7 +34,9 @@ public interface ObservedGame
 	
 	public Card[] getPlayerHand(int i);
 	
-	public Card palpitar(int suspectID, int weaponID, int roomID);
+	public Card guess(int suspectID, int weaponID, int roomID);
+	
+	public boolean getHasGuessed();
 	
 	//temporária! Quebra arquitetura?
 	public Tabuleiro getTabuleiro();

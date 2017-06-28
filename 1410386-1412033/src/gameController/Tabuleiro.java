@@ -35,7 +35,7 @@ public class Tabuleiro {
 	public static final Color corAlcance	= new Color(153, 255, 153, 128);
 
 	/*	Estados da matriz
-	 * 	Valores associados a cada posiÃ§Ã£o da matriz.
+	 * 	Valores associados a cada posição da matriz.
 	 */
 	public static final int VAZIO		= -1;
 	public static final int ALCANCE		= -2;
