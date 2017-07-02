@@ -5,6 +5,7 @@ import gameController.Card;
 import gameController.GameRulesFactory;
 import gameController.ObservedGame;
 import gameController.Tabuleiro;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -29,18 +30,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 //classe view que se registra como observadora e interage com o jogo
-
 public class GameView extends JFrame //implements Observer
-
 {
 
 	ObservedGame gc;
-	private DieDisplay die;
 	private PainelTabuleiro grid;
-	//private NotesButtonPanel notesP;
-	//private CardsButtonPanel cardsP;
-	private ButtonsPanel buttons;
-	
+	private PainelAcoes actions;
+	private PainelInformacoes infos;
 	
 	//construtor para novo jogo
 	public GameView(String s, boolean[] activePlayer)
@@ -49,23 +45,18 @@ public class GameView extends JFrame //implements Observer
 		//setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
- 
-    gc = GameRulesFactory.getGameInstance();
-		//gc.addObserver(this);
-    getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
-		die = new DieDisplay(gc);
+		gc = GameRulesFactory.getGameInstance();
+		//gc.addObserver(this);		
+		
+		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
+		
 		grid = new PainelTabuleiro(gc, this);
-    //notesP = new NotesButtonPanel(gc, this);
-		//cardsP = new CardsButtonPanel(this);
-    buttons = new ButtonsPanel(gc, this);
-		
-		
-		getContentPane().add(die);
+		actions = new  PainelAcoes(this);
+		//infos   = new  PainelInformacoes(gc,this);
+
+
 		getContentPane().add(grid);
-		getContentPane().add(buttons);
-		//getContentPane().add(notesP);
-		//getContentPane().add(cardsP);
-		
+		getContentPane().add(actions);
 		pack();
 		// Inicializa janela no tamanho default no centro da tela.
 		Toolkit tk=Toolkit.getDefaultToolkit();
@@ -77,243 +68,7 @@ public class GameView extends JFrame //implements Observer
 		
 				
 	}
-	/*
-	public void update(Observable o, Object arg)
-	{
-		this.repaint();
-		
-	}	
-	 */
 }
-
-class ButtonsPanel extends JPanel
-{
-	// usado para manipular o jogo
-	private ObservedGame gc;
-	private GameView gv;
-	
-	JButton notesB;
-	JButton rollDie;
-	JButton myCardsB;
-	JButton accuseB;
-		
-	public ButtonsPanel(ObservedGame game, GameView gameview)
-	{
-		gc = game;
-		gv = gameview;
-		
-		
-		//bot�o usado para abrir a janela das notas
-        notesB = new JButton("Ver Notas");
-		notesB.addActionListener(new NotesButtonHandler(gc, gv));
-		
-		//bot�o usado para tentar rolar o dado
-        rollDie = new JButton("Rolar Dado");
-		rollDie.addActionListener(new RollDieHandler(gc));
-		
-		//bot�o usado para ver cartas do player
-		myCardsB = new JButton("Ver Minhas Cartas");
-        myCardsB.addActionListener(new MyCardsButtonHandler(gv));
-        
-        //bot�o usado para acusa��o
-        accuseB =  new JButton("Acusar");
-        accuseB.addActionListener(new AccuseButtonHandler(gv));
-		
-		add(rollDie);
-		add(myCardsB);
-		add(notesB);
-		
-				
-	}
-	
-	public Dimension getPreferredSize() 
-	{
-        int width = Math.max(rollDie.getPreferredSize().width, Math.max(notesB.getPreferredSize().width, myCardsB.getPreferredSize().width));
-		int height = rollDie.getPreferredSize().height + notesB.getPreferredSize().height + myCardsB.getPreferredSize().height + 30;
-        return new Dimension(width, height);
-    }
-	
-	protected void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-	}
-	
-	
-}
-
-//painel que interage com e exibe resultado dos dados do jogo
-class DieDisplay extends JPanel implements Observer
-{
-	// usado para manipular o jogo
-	private ObservedGame gc;
-	private int result;
-	
-	//imagens para resultados de 1 a 6
-	private BufferedImage d1;
-	private BufferedImage d2;
-	private BufferedImage d3;
-	private BufferedImage d4;
-	private BufferedImage d5;
-	private BufferedImage d6;
-	
-	public DieDisplay(ObservedGame game)
-	{
-		gc = game;
-		result = gc.getDie();
-		game.addObserver(this);
-		
-		
-		try
-		{
-			d1 = ImageIO.read(new File("assets/dado1.jpg"));
-			d2 = ImageIO.read(new File("assets/dado2.jpg"));
-			d3 = ImageIO.read(new File("assets/dado3.jpg"));
-			d4 = ImageIO.read(new File("assets/dado4.jpg"));
-			d5 = ImageIO.read(new File("assets/dado5.jpg"));
-			d6 = ImageIO.read(new File("assets/dado6.jpg"));
-
-		} catch (IOException e)
-		{
-			System.out.println("Incapaz de abrir imagem. Erro:" + e.getMessage());
-			System.exit(1);
-		}
-	       
-		
-	}
-	
-	public Dimension getPreferredSize() 
-	{
-        return new Dimension(d1.getWidth(), d1.getHeight());
-    }
-	
-	protected void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-		
-		switch(result)
-		{
-			case 1: 
-				g.drawImage(d1, 0, 0, d1.getWidth(), d1.getHeight(), this);
-				break;
-			case 2:
-				g.drawImage(d2, 0, 0, d2.getWidth(), d2.getHeight(), this);
-				break;
-			case 3: 
-				g.drawImage(d3, 0, 0, d3.getWidth(), d3.getHeight(), this);
-				break;
-			case 4: 
-				g.drawImage(d4, 0, 0, d4.getWidth(), d4.getHeight(), this);
-				break;
-			case 5: 
-				g.drawImage(d5, 0, 0, d5.getWidth(), d5.getHeight(), this);
-				break;
-			case 6: 
-				g.drawImage(d6, 0, 0, d6.getWidth(), d6.getHeight(), this);
-				break;		
-		}
-				
-		
-	}
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		result = gc.getDie();
-		this.repaint();
-		
-	}
-	
-	
-}
-
-class ImagePanel extends JPanel
-{
-	BufferedImage img;
-	
-	public ImagePanel(BufferedImage i)
-	{
-		img = i;
-	}
-	
-	public void setImage(BufferedImage i)
-	{
-		img = i;
-	}
-	
-	
-	protected void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), this);
-	}
-		
-	
-}
-
-class NotesButtonPanel extends JPanel
-{
-	// usado para manipular o jogo
-	private ObservedGame gc;
-	private GameView gv;
-		
-	public NotesButtonPanel(ObservedGame game, GameView gameview)
-	{
-		gc = game;
-		gv = gameview;
-		
-		
-		//bot�o usado para abrir a janela das notas
-        JButton notesB = new JButton("Ver Notas");
-		notesB.addActionListener(new NotesButtonHandler(gc, gv));
-		
-		add(notesB);
-		
-				
-	}
-	
-	public Dimension getPreferredSize() 
-	{
-        return new Dimension(40, 30);
-    }
-	
-	protected void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-	}
-	
-	
-}
-
-class CardsButtonPanel extends JPanel
-{
-	// usado para ver as cartas
-	
-	private GameView gv;
-		
-	public CardsButtonPanel(GameView gameview)
-	{
-		gv = gameview;		
-		
-		//bot�o usado para abrir a janela com as cartas do jogador
-        JButton myCardsB = new JButton("Ver Minhas Cartas");
-        myCardsB.addActionListener(new MyCardsButtonHandler(gv));
-		
-		add(myCardsB);
-		
-	}
-	
-	public Dimension getPreferredSize() 
-	{
-        return new Dimension(40, 30);
-    }
-	
-	protected void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-	}
-	
-	
-}
-
 
 
 class PainelTabuleiro extends JPanel implements Observer
@@ -382,11 +137,12 @@ class PainelTabuleiro extends JPanel implements Observer
 		
 		
 		for(int i=0; i<tabuleiro.getTamanhoTabuleiro(); i++){
-				switch(tabuleiro.matriz[i]){
-					case Tabuleiro.ALCANCE:
-						g2d.setColor(Tabuleiro.corAlcance);
-						g2d.fillRect(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
-						break;
+			if(tabuleiro.matriz[i][1] == Tabuleiro.ALCANCE)
+			{
+				g2d.setColor(Tabuleiro.corAlcance);
+				g2d.fillRect(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
+			}
+			switch(tabuleiro.matriz[i][0]){
 					case ObservedGame.GREEN:
 						g2d.setColor(Tabuleiro.corGreen);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
@@ -471,6 +227,5 @@ class PainelTabuleiro extends JPanel implements Observer
 			tabuleiro.AdicionaAlcance(gc.getDie(), gc.getTurn());
 			repaint();
 		}
-		
-	}
+	}	
 }

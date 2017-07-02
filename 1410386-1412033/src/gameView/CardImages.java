@@ -59,13 +59,13 @@ public class CardImages
 			
 			//primeiro array contem imagens de jogadores
 			//"Reverendo Green", "Coronel Mustard", "Senhora Peacock", "Professor Plum", "Senhorita Scarlet","Senhora White"
-						
-			playerImages[0] = ImageIO.read(new File("assets/Suspeitos/scarlet.jpg"));
+			playerImages[0] = ImageIO.read(new File("assets/Suspeitos/green.jpg"));
 			playerImages[1] = ImageIO.read(new File("assets/Suspeitos/mustard.jpg"));
-			playerImages[2] = ImageIO.read(new File("assets/Suspeitos/white.jpg"));
-			playerImages[3] = ImageIO.read(new File("assets/Suspeitos/green.jpg"));
-			playerImages[4] = ImageIO.read(new File("assets/Suspeitos/peacock.jpg"));
-			playerImages[5] = ImageIO.read(new File("assets/Suspeitos/plum.jpg"));
+			playerImages[2] = ImageIO.read(new File("assets/Suspeitos/peacock.jpg"));
+			playerImages[3] = ImageIO.read(new File("assets/Suspeitos/plum.jpg"));
+			playerImages[4] = ImageIO.read(new File("assets/Suspeitos/scarlet.jpg"));
+			playerImages[5] = ImageIO.read(new File("assets/Suspeitos/white.jpg"));
+			
 			
 			
 			//segundo contem armas

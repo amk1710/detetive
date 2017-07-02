@@ -1,7 +1,5 @@
 package gameView;
 
-import gameController.Card;
-import gameController.CardType;
 import gameController.ObservedGame;
 
 import java.awt.Dimension;
@@ -82,7 +80,7 @@ class AccuseControl extends JPanel{
 	
 	int suspectID;
 	int weaponID;
-	//roomId é fixo no quarto
+	//roomId ï¿½ fixo no quarto
 	int roomID;
 	
 	
@@ -145,7 +143,7 @@ class AccuseControl extends JPanel{
 		suspectButtons = new JRadioButton[6];
 		for(int i = 0; i < suspectButtons.length; i++)
 		{
-			suspectButtons[i] = new JRadioButton(Card.getName(CardType.SUSPECT, i));
+			suspectButtons[i] = new JRadioButton(ObservedGame.NAMES[i]);
 			suspectButtons[i].addActionListener(Plistener);
 			suspectGroup.add(suspectButtons[i]);
 			
@@ -155,7 +153,7 @@ class AccuseControl extends JPanel{
 		weaponButtons = new JRadioButton[6];
 		for(int i = 0; i < weaponButtons.length; i++)
 		{
-			weaponButtons[i] = new JRadioButton(Card.getName(CardType.WEAPON, i));
+			weaponButtons[i] = new JRadioButton(ObservedGame.NAMES[i+ ObservedGame.CORDA]);
 			weaponButtons[i].addActionListener(Wlistener);
 			weaponGroup.add(weaponButtons[i]);
 			
@@ -165,7 +163,7 @@ class AccuseControl extends JPanel{
 		roomButtons = new JRadioButton[9];
 		for(int i = 0; i < weaponButtons.length; i++)
 		{
-			roomButtons[i] = new JRadioButton(Card.getName(CardType.ROOM, i));
+			roomButtons[i] = new JRadioButton(ObservedGame.NAMES[i + ObservedGame.COZINHA]);
 			roomButtons[i].addActionListener(Glistener);
 			roomGroup.add(roomButtons[i]);
 			

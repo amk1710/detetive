@@ -43,7 +43,6 @@ public interface ObservedGame
 											"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver",      
 											"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de M�sica", "Entrada", "Jardim de Inverno", "Sal�o de Jogos", "Biblioteca", "Escrit�rio"};
 	
-	
 	public void addObserver(Observer o);
 	
 	
@@ -70,10 +69,9 @@ public interface ObservedGame
 	
 	public Card guess(int suspectID, int weaponID, int roomID);
 	
-	public boolean getHasGuessed();	
-
-	public boolean accuse(int suspectID, int weaponID, int roomID);
+	public boolean getHasGuessed();
 	
+	//tempor�ria! Quebra arquitetura?
 	public Tabuleiro getTabuleiro();
 	
 }
