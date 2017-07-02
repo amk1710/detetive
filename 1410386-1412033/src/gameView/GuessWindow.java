@@ -11,12 +11,18 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -31,20 +37,42 @@ public class GuessWindow extends JFrame
 	GameView gv;
 	GuessControl guess;
 	JButton gb;
+	ImageIcon cardImage;
+	JLabel label;
 	
 	GuessWindow(String s, GameView gameview)
 	{
 		super (s);
 		gv = gameview;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setResizable(false);
+		setResizable(true);
 		
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0, 0, 0, 0);
 			
 		guess = new GuessControl(gv);
 		gb = new JButton("Palpitar");
-		gb.addActionListener(new GuessHandler(this));
+		try 
+		{
+			cardImage = new ImageIcon(ImageIO.read(new File("assets/blank.jpg")));
+			label = new JLabel(cardImage);
+		}  catch (IOException e)
+		{
+			System.out.println("Incapaz de abrir imagem. Erro:" + e.getMessage());
+			System.exit(1);
+		}
 		
-		getContentPane().add(guess);
+		
+		gb.addActionListener(new GuessHandler(this));
+		c.gridx = 0;
+		c.gridx= 0;
+		getContentPane().add(guess, c);
+		c.gridx = 1;
+		getContentPane().add(gb, c);
+		c.gridx = 2;
+		getContentPane().add(label, c);
 		pack();
 		
 		
@@ -63,7 +91,8 @@ public class GuessWindow extends JFrame
 	
 	void ShowCard(Card c)
 	{
-		
+		label.setIcon(new ImageIcon(CardImages.getImage(c)));
+		System.out.println("image set");
 	}
 	
 	
