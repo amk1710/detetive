@@ -108,6 +108,7 @@ class PainelTabuleiro extends JPanel implements Observer
 					repaint();
 					//abre janela de palpite
 					//TO-DO se entrar em comodo chamar uma funçao para notificar painel de acoes e oferecer opcao de dar palpite
+					System.out.println("em comodo? " + tabuleiro.emComodo(gc.getTurn()));
 					if(tabuleiro.emComodo(gc.getTurn()) != -1)
 					{
 						GuessWindow gw = new GuessWindow("Palpite", gv);

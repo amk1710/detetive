@@ -232,6 +232,8 @@ class GameRules extends Observable implements ObservedGame
 		answer[1] = weapons.remove(weapons.size() - 1);
 		answer[2] = rooms.remove(rooms.size() - 1);
 		
+		System.out.println(answer[0].getName() + " " + answer[1].getName() + " " + answer[2].getName() + " ");
+		
 		allCards.addAll(suspects);
 		allCards.addAll(weapons);
 		allCards.addAll(rooms);
@@ -281,7 +283,7 @@ class GameRules extends Observable implements ObservedGame
 		
 		//checa se h� alguma carta em alguma outra m�o
 		int i = (currentTurn+1)%6;
-		while(i != (currentTurn+1)%6)
+		while(i != (currentTurn)%6)
 		{
 			for(Card c: playerCards[i])
 			{
