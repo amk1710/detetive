@@ -1,5 +1,7 @@
 package gameView;
 
+import gameController.ObservedGame;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,7 +13,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -20,31 +21,27 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import gameController.Card;
-import gameController.ObservedGame;
-
-public class GuessWindow extends JFrame 
+public class AccuseWindow extends JFrame 
 {
 	public final int WIDTH	= 640;
 	public final int HEIGHT = 480;
 	
-	GameView gv;
-	GuessControl guess;
-	JButton gb;
+	AccuseControl accuseController;
 	
-	GuessWindow(String s, GameView gameview)
+	ObservedGame gc;
+	GameView gv;
+	
+	public AccuseWindow(String s, GameView gameview)
 	{
 		super (s);
 		gv = gameview;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setResizable(false);
 		
-			
-		guess = new GuessControl(gv);
-		gb = new JButton("Palpitar");
-		gb.addActionListener(new GuessHandler(this));
 		
-		getContentPane().add(guess);
+		
+		accuseController = new AccuseControl(gv);
+		setContentPane(accuseController);
 		pack();
 		
 		
@@ -61,37 +58,33 @@ public class GuessWindow extends JFrame
 	
 	}
 	
-	void ShowCard(Card c)
-	{
-		
-	}
-	
 	
 }
 
 
-class GuessControl extends JPanel{
+class AccuseControl extends JPanel{
 	
 	GameView gv;
-
-	private JRadioButton   roomButton;
+	
+	private JRadioButton[] roomButtons;
 	private JRadioButton[] weaponButtons;
 	private JRadioButton[] suspectButtons;
 	
 	private ButtonGroup suspectGroup;
 	private ButtonGroup weaponGroup;
+	private ButtonGroup roomGroup;
 	
 	private ActionListener Plistener;
 	private ActionListener Wlistener;
+	private ActionListener Glistener;
 	
 	int suspectID;
 	int weaponID;
-	//roomId � fixo no quarto
-	final int roomID;
+	//roomId � fixo no quarto
+	int roomID;
 	
 	
-	
-	GuessControl(GameView gameview)
+	AccuseControl(GameView gameview)
 	{
 		
 		//Define layout do painel contendo os botÃµes
@@ -133,15 +126,24 @@ class GuessControl extends JPanel{
 			}
 		};
 		
-		
-		
-		
+		Glistener = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int i;
+				for(i = 0; i < roomButtons.length; i++)
+				{
+					if(roomButtons[i].equals(e.getSource())) break;
+				}
+				weaponID = i;
+			}
+		};		
 		
 		suspectGroup = new ButtonGroup();
 		suspectButtons = new JRadioButton[6];
 		for(int i = 0; i < suspectButtons.length; i++)
 		{
-			suspectButtons[i] = new JRadioButton(ObservedGame.NAMES[i + ObservedGame.SCARLET]);
+			suspectButtons[i] = new JRadioButton(gv.playerNames[i]);
 			suspectButtons[i].addActionListener(Plistener);
 			suspectGroup.add(suspectButtons[i]);
 			
@@ -151,17 +153,21 @@ class GuessControl extends JPanel{
 		weaponButtons = new JRadioButton[6];
 		for(int i = 0; i < weaponButtons.length; i++)
 		{
-			weaponButtons[i] = new JRadioButton(ObservedGame.NAMES[i + ObservedGame.CORDA]);
+			weaponButtons[i] = new JRadioButton(gv.weaponNames[i]);
 			weaponButtons[i].addActionListener(Wlistener);
 			weaponGroup.add(weaponButtons[i]);
 			
 		}
 		
-		//TO-DO pegar quarto correto
-		roomButton = new JRadioButton(ObservedGame.NAMES[ObservedGame.COZINHA]);
-		
-		
+		roomGroup = new ButtonGroup();
+		roomButtons = new JRadioButton[9];
+		for(int i = 0; i < weaponButtons.length; i++)
+		{
+			roomButtons[i] = new JRadioButton(gv.roomNames[i]);
+			roomButtons[i].addActionListener(Glistener);
+			roomGroup.add(roomButtons[i]);
 			
+		}			
 				
 		c.weightx = 1;
 		c.weighty = 1;
@@ -198,10 +204,24 @@ class GuessControl extends JPanel{
 		
 		c.gridx = 2;
 		c.gridy=0;
-		add(roomButton, c);
-		
-		
-		
+		add(roomButtons[0], c);
+		c.gridy=1;
+		add(roomButtons[1], c);
+		c.gridy=2;
+		add(roomButtons[2], c);
+		c.gridy=3;
+		add(roomButtons[3], c);
+		c.gridy=4;
+		add(roomButtons[4], c);
+		c.gridy=5;
+		add(roomButtons[5], c);
+		c.gridy=6;
+		add(roomButtons[6], c);
+		c.gridy=7;
+		add(roomButtons[7], c);
+		c.gridy=8;
+		add(roomButtons[8], c);
+
 		
 	}
 	
@@ -210,22 +230,3 @@ class GuessControl extends JPanel{
     }
 }
 
-
-class GuessHandler implements ActionListener
-{
-	
-	GuessWindow gw;
-	
-	public GuessHandler(GuessWindow guesswindow)
-	{
-		gw = guesswindow;
-	}
-	
-	public void actionPerformed(ActionEvent arg0) 
-	{
-		Card c = gw.gv.gc.guess(gw.guess.suspectID, gw.guess.weaponID, gw.guess.roomID);
-		gw.ShowCard(c);
-		
-	}
-
-}

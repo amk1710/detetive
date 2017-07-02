@@ -21,6 +21,11 @@ public class CardImages
 	
 	public static BufferedImage getImage(Card c)
 	{
+		if(c == null)
+		{
+			return NaN;
+		}
+		
 		try
 		{
 			

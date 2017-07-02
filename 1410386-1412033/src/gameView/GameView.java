@@ -29,14 +29,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 //classe view que se registra como observadora e interage com o jogo
+
 public class GameView extends JFrame //implements Observer
+
 {
 
 	ObservedGame gc;
 	private DieDisplay die;
 	private PainelTabuleiro grid;
-	private NotesButtonPanel notesP;
-	private CardsButtonPanel cardsP;
+	//private NotesButtonPanel notesP;
+	//private CardsButtonPanel cardsP;
+	private ButtonsPanel buttons;
 	
 	
 	//construtor para novo jogo
@@ -46,20 +49,23 @@ public class GameView extends JFrame //implements Observer
 		//setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		gc = GameRulesFactory.getGameInstance();
-		//gc.addObserver(this);		
-		
-		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
+ 
+    gc = GameRulesFactory.getGameInstance();
+		//gc.addObserver(this);
+    getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
 		die = new DieDisplay(gc);
 		grid = new PainelTabuleiro(gc, this);
-		notesP = new NotesButtonPanel(gc, this);
-		cardsP = new CardsButtonPanel(this);
+    //notesP = new NotesButtonPanel(gc, this);
+		//cardsP = new CardsButtonPanel(this);
+    buttons = new ButtonsPanel(gc, this);
 		
 		
 		getContentPane().add(die);
 		getContentPane().add(grid);
-		getContentPane().add(notesP);
-		getContentPane().add(cardsP);
+		getContentPane().add(buttons);
+		//getContentPane().add(notesP);
+		//getContentPane().add(cardsP);
+		
 		pack();
 		// Inicializa janela no tamanho default no centro da tela.
 		Toolkit tk=Toolkit.getDefaultToolkit();
@@ -75,14 +81,68 @@ public class GameView extends JFrame //implements Observer
 	public void update(Observable o, Object arg)
 	{
 		this.repaint();
-		die.repaint();
-		grid.repaint();
+		
 	}	
 	 */
 }
 
+class ButtonsPanel extends JPanel
+{
+	// usado para manipular o jogo
+	private ObservedGame gc;
+	private GameView gv;
+	
+	JButton notesB;
+	JButton rollDie;
+	JButton myCardsB;
+	JButton accuseB;
+		
+	public ButtonsPanel(ObservedGame game, GameView gameview)
+	{
+		gc = game;
+		gv = gameview;
+		
+		
+		//bot�o usado para abrir a janela das notas
+        notesB = new JButton("Ver Notas");
+		notesB.addActionListener(new NotesButtonHandler(gc, gv));
+		
+		//bot�o usado para tentar rolar o dado
+        rollDie = new JButton("Rolar Dado");
+		rollDie.addActionListener(new RollDieHandler(gc));
+		
+		//bot�o usado para ver cartas do player
+		myCardsB = new JButton("Ver Minhas Cartas");
+        myCardsB.addActionListener(new MyCardsButtonHandler(gv));
+        
+        //bot�o usado para acusa��o
+        accuseB =  new JButton("Acusar");
+        accuseB.addActionListener(new AccuseButtonHandler(gv));
+		
+		add(rollDie);
+		add(myCardsB);
+		add(notesB);
+		
+				
+	}
+	
+	public Dimension getPreferredSize() 
+	{
+        int width = Math.max(rollDie.getPreferredSize().width, Math.max(notesB.getPreferredSize().width, myCardsB.getPreferredSize().width));
+		int height = rollDie.getPreferredSize().height + notesB.getPreferredSize().height + myCardsB.getPreferredSize().height + 30;
+        return new Dimension(width, height);
+    }
+	
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+	}
+	
+	
+}
+
 //painel que interage com e exibe resultado dos dados do jogo
-class DieDisplay extends JPanel
+class DieDisplay extends JPanel implements Observer
 {
 	// usado para manipular o jogo
 	private ObservedGame gc;
@@ -101,6 +161,9 @@ class DieDisplay extends JPanel
 	public DieDisplay(ObservedGame game)
 	{
 		gc = game;
+		result = gc.getDie();
+		game.addObserver(this);
+		
 		
 		try
 		{
@@ -117,29 +180,8 @@ class DieDisplay extends JPanel
 			System.exit(1);
 		}
 		
-		setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 2;
-		c.insets = new Insets(0, 0, 8, 0);	
-        c.anchor = GridBagConstraints.PAGE_END;
-		
-		//bot�o usado para tentar rolar o dado
-        JButton rollDie = new JButton("Rolar Dado");
-		rollDie.addActionListener(new RollDieHandler(gc));
-		
 		imgPanel = new ImagePanel(d1);
-		
-		c.gridy=0;
-	    c.weighty = 1.0;
-	    add(rollDie, c);
-	    
-	    c.gridy=0;
-        c.weighty = 1.0;
-		add(imgPanel, c);
-	    
-	    
+	       
 		
 	}
 	
@@ -152,7 +194,7 @@ class DieDisplay extends JPanel
 	{
 		super.paintComponent(g);
 		
-		switch(gc.getDie())
+		switch(result)
 		{
 			case 1: 
 				//imgPanel.setImage(d1);
@@ -182,6 +224,13 @@ class DieDisplay extends JPanel
 		
 		imgPanel.repaint();
 		
+		
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		result = gc.getDie();
+		this.repaint();
 		
 	}
 	

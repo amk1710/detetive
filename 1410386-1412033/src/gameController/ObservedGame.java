@@ -69,9 +69,10 @@ public interface ObservedGame
 	
 	public Card guess(int suspectID, int weaponID, int roomID);
 	
-	public boolean getHasGuessed();
+	public boolean getHasGuessed();	
+
+	public boolean accuse(int suspectID, int weaponID, int roomID);
 	
-	//tempor�ria! Quebra arquitetura?
 	public Tabuleiro getTabuleiro();
 	
 }

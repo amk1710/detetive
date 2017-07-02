@@ -304,6 +304,23 @@ class GameRules extends Observable implements ObservedGame
 	{
 		return hasGuessed;
 	}
+
+	
+	public boolean accuse(int suspectID, int weaponID, int roomID) 
+	{
+		if(answer[0].equals(new Card(CardType.SUSPECT, suspectID)) && answer[1].equals(new Card(CardType.WEAPON, weaponID)) && answer[2].equals(new Card(CardType.ROOM, roomID)))
+		{
+			//player ganhou o jogo
+			return true;
+		}
+		else
+		{
+			//player deve sair do jogo
+			activePlayers[currentTurn] = false;
+			endTurn();
+			return false;
+		}
+	}
 	
 
 }
