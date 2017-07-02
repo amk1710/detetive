@@ -38,7 +38,8 @@ public interface ObservedGame
 	
 	public boolean getHasGuessed();
 	
-	//temporária! Quebra arquitetura?
+	public boolean accuse(int suspectID, int weaponID, int roomID);
+	
 	public Tabuleiro getTabuleiro();
 	
 }
