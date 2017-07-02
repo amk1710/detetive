@@ -149,7 +149,7 @@ class NotesControl extends JPanel{
 		
 		for(int i = 0; i < gc.numPlayers; i++)
 		{
-			playerCheckBoxes[i]		= new JCheckBox(gv.playerNames[i], playerMarked[i]);
+			playerCheckBoxes[i]		= new JCheckBox(ObservedGame.NAMES[i + ObservedGame.SCARLET], playerMarked[i]);
 			playerCheckBoxes[i].addItemListener(checkboxListener);
 		}
 		
@@ -157,7 +157,7 @@ class NotesControl extends JPanel{
 		
 		for(int i = 0; i < gc.numWeapons; i++)
 		{
-			weaponCheckBoxes[i]		= new JCheckBox(gv.weaponNames[i], weaponsMarked[i]);
+			weaponCheckBoxes[i]		= new JCheckBox(ObservedGame.NAMES[i + ObservedGame.CORDA], weaponsMarked[i]);
 			weaponCheckBoxes[i].addItemListener(checkboxListener);
 		}
 		
@@ -166,7 +166,7 @@ class NotesControl extends JPanel{
 		
 		for(int i = 0; i < gc.numRooms; i++)
 		{
-			roomCheckBoxes[i]		= new JCheckBox(gv.roomNames[i], roomsMarked[i]);
+			roomCheckBoxes[i]		= new JCheckBox(ObservedGame.NAMES[i + ObservedGame.COZINHA], roomsMarked[i]);
 			roomCheckBoxes[i].addItemListener(checkboxListener);
 		}
 				

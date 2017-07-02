@@ -6,15 +6,17 @@ public class GameRulesFactory {
 	//get jogo novo
 	public static ObservedGame getGameInstance(boolean[] activePlayers)
 	{
-		if(game == null)
-		{
-			game = new GameRules(activePlayers);
-		}
+		game = new GameRules(activePlayers);
+		return game;
+	}
+	
+	public static ObservedGame getGameInstance()
+	{
 		return game;
 	}
 	
 	//get jogo salvo
-	public static void  getGameInstance()
+	public static void  getGameInstance2()
 	{
 		
 	}
