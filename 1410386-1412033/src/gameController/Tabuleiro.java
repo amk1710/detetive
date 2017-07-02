@@ -429,7 +429,7 @@ public int getTamanhoTabuleiro(){
 		}
 		return false;		
 	}
-	private int emComodo(int indexJogador) {
+	public int emComodo(int indexJogador) {
 		for(int j=0; j<9; j++)
 			for(int i=0; i<12; i++)
 				if(comodos[j][i] == indexJogador)
