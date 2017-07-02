@@ -6,17 +6,25 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
 public class Tabuleiro {
-	public  BufferedImage img;
-	public  int[]  matriz;
-
+	public  BufferedImage imgTabuleiro;
+	public  BufferedImage imgCorda;
+	public  BufferedImage imgCano;
+	public  BufferedImage imgFaca;
+	public  BufferedImage imgChave;
+	public  BufferedImage imgCastical;
+	public  BufferedImage imgRevolver;
 	private double img_escalaHorizontal 	= 1.0;
 	private double img_escalaVertical 		= 1.0;
+
 	
+	public  int[]  matriz;
 	private int  matriz_numColunas;
 	private int  matriz_numLinhas;
 	private int  matriz_deslocamentoColunas;
@@ -24,7 +32,8 @@ public class Tabuleiro {
 	private int  matriz_larguraColuna;
 	private int  matriz_alturaLinha;
 
-	
+	//Container dos itens que estÃ£o dentro de um comodo - tam = maxJogadores + maxArmas
+	public int[][] comodos = new int[ObservedGame.numRooms][ObservedGame.numPlayers + ObservedGame.numWeapons];
 
 	public static final Color corGreen 		= new Color(36,83,41, 255);
 	public static final Color corMustard 	= new Color(204,176,32, 255);
@@ -35,27 +44,28 @@ public class Tabuleiro {
 	public static final Color corAlcance	= new Color(153, 255, 153, 128);
 
 	/*	Estados da matriz
-	 * 	Valores associados a cada posição da matriz.
+	 * 	Valores associados a cada posiï¿½ï¿½o da matriz.
 	 */
 	public static final int VAZIO		= -1;
 	public static final int ALCANCE		= -2;
 	public static final int INVALIDO	= -3;
 
-	//Indice dos jogadores
-	public static final int GREEN		= 0;
-	public static final int MUSTARD		= 1;
-	public static final int PEACOCK		= 2;
-	public static final int PLUM		= 3;
-	public static final int SCARLET		= 4;
-	public static final int WHITE		= 5;
+
 	
 	
 	public Tabuleiro(){
 		Scanner infomatriz=null;
 		try{
-			img = ImageIO.read(new File("assets/Tabuleiro-Dobrado.JPG"));
+			imgTabuleiro = ImageIO.read(new File("assets/Tabuleiro-Dobrado.JPG"));
 			infomatriz = new Scanner(new FileReader("assets/Tabuleiro-Dobrado"));
-
+			
+			imgCorda = ImageIO.read(new File("assets/Armas/Corda.jpg"));
+			imgCano = ImageIO.read(new File("assets/Armas/Cano.jpg"));
+			imgFaca = ImageIO.read(new File("assets/Armas/Faca.jpg"));
+			imgChave = ImageIO.read(new File("assets/Armas/ChaveInglesa.jpg"));
+			imgCastical = ImageIO.read(new File("assets/Armas/Castical.jpg"));
+			imgRevolver = ImageIO.read(new File("assets/Armas/Revolver.jpg"));
+			
 		} catch (IOException e){
 			System.out.println("Incapaz de abrir arquivo. Erro:" + e.getMessage());
 			System.exit(1);
@@ -66,9 +76,14 @@ public class Tabuleiro {
 		matriz_larguraColuna			= infomatriz.nextInt();
 		matriz_deslocamentoLinhas		= infomatriz.nextInt();
 		matriz_deslocamentoColunas		= infomatriz.nextInt();
-		matriz_numLinhas  = img.getHeight()/matriz_alturaLinha;
-		matriz_numColunas = img.getWidth()/matriz_larguraColuna;		
+		matriz_numLinhas  = imgTabuleiro.getHeight()/matriz_alturaLinha;
+		matriz_numColunas = imgTabuleiro.getWidth()/matriz_larguraColuna;		
 		matriz = new int[matriz_numLinhas*matriz_numColunas];
+		
+		for(int j=0; j<ObservedGame.numRooms; j++)
+			for(int i=0; i<(ObservedGame.numPlayers + ObservedGame.numWeapons); i++)
+					comodos[j][i] = -1;
+		
 		for(int i=0; i<getTamanhoTabuleiro(); i++){
 			if(infomatriz.hasNext())
 				matriz[i] = infomatriz.nextInt();
@@ -85,16 +100,109 @@ public class Tabuleiro {
 		return (int) img_escalaHorizontal*(matriz_larguraColuna*x + matriz_deslocamentoColunas);
 	}
  	public int getXPosJogador(int pos){
+ 		System.out.println("pegando x jogador");
 		return (int) img_escalaHorizontal*(matriz_larguraColuna*(pos%matriz_numColunas) + matriz_deslocamentoColunas);
 	}
-	public int getYJogador(int y){
+ 	public int getYJogador(int y){
 		return (int) img_escalaVertical*(matriz_alturaLinha*y + matriz_deslocamentoLinhas);
 	}
 	public int getYPosJogador(int pos){ 
 		return (int)  img_escalaVertical*(matriz_alturaLinha*(pos/matriz_numColunas) + matriz_deslocamentoLinhas);
 	}
 
-	public int getTamanhoTabuleiro(){
+	public int getXComodo(int posComodo, int indexComodo)
+	{
+		System.out.println("pegando x de uma arma");
+		indexComodo += ObservedGame.COZINHA;
+		switch(indexComodo)
+		{
+		case(ObservedGame.COZINHA):	
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(1+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.JANTAR):
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(1+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.ESTAR):		
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(1+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.MUSICA):		
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(10+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.ENTRADA):	
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(10+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.INVERNO):
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(19+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.JOGOS):
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(19+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.BIBLIOTECA):
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(19+(posComodo%4)) + matriz_deslocamentoColunas);
+		case(ObservedGame.ESCRITORIO):
+			return (int) img_escalaHorizontal*(matriz_larguraColuna*(19+(posComodo%4)) + matriz_deslocamentoColunas);
+				
+		}
+		return 0;
+	}
+	public int getYComodo(int posComodo, int indexComodo)
+	{
+		indexComodo += ObservedGame.COZINHA;
+		switch(indexComodo)
+		{
+		case(ObservedGame.COZINHA):	
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(2) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(3) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(4) + matriz_deslocamentoLinhas);
+		case(ObservedGame.JANTAR):
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(11) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(12) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(13) + matriz_deslocamentoLinhas);
+		case(ObservedGame.ESTAR):		
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(21) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(22) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(23) + matriz_deslocamentoLinhas);
+		case(ObservedGame.MUSICA):		
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(2) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(3) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(4) + matriz_deslocamentoLinhas);
+		case(ObservedGame.ENTRADA):	
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(21) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(22) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(23) + matriz_deslocamentoLinhas);
+		case(ObservedGame.INVERNO):
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(2) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(3) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(4) + matriz_deslocamentoLinhas);
+		case(ObservedGame.JOGOS):
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(9) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(10) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(11) + matriz_deslocamentoLinhas);
+		case(ObservedGame.BIBLIOTECA):
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(15) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(16) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(17) + matriz_deslocamentoLinhas);
+		case(ObservedGame.ESCRITORIO):
+			if(posComodo < 4)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(21) + matriz_deslocamentoLinhas);
+			if(posComodo < 8)
+				return (int)  img_escalaVertical*(matriz_alturaLinha*(22) + matriz_deslocamentoLinhas);
+			return (int)  img_escalaVertical*(matriz_alturaLinha*(23) + matriz_deslocamentoLinhas);
+				
+		}
+		return 0;
+	}
+	
+public int getTamanhoTabuleiro(){
 		return matriz_numLinhas*matriz_numColunas;
 	}
 	public int getDX(){
@@ -152,45 +260,45 @@ public class Tabuleiro {
 
 	private boolean movimentacaoValidaComodo(int xMouse, int yMouse, int xJogador, int yJogador, int passo, int indexJogador) {
 		//Dentro da cozinha
-		if(xMouse<=5 && yMouse <= 6)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.COZINHA)
 			if(distanciaValida(4, 6, xJogador, yJogador, passo-1) && !jogadorEm(4,6, indexJogador))
 				return true;
 		//Dentro da sala de musica
-		if((xMouse>=10 && xMouse<=13 && (yMouse==1 || yMouse==0)) || (xMouse>=8 && xMouse<=15 && yMouse>=2 && yMouse<=7))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.MUSICA)
 			if(	(distanciaValida(7, 5, xJogador, yJogador, passo-1)  && !jogadorEm(7,5, indexJogador)) 	|| 
 				(distanciaValida(16, 5, xJogador, yJogador, passo-1) && !jogadorEm(16,5, indexJogador))  	||
 				(distanciaValida(9, 8, xJogador, yJogador, passo-1)  && !jogadorEm(9,8, indexJogador)) 	||
 				(distanciaValida(14, 8, xJogador, yJogador, passo-1) && !jogadorEm(14,8, indexJogador))	)	
 				return true;
 		//Dentro do jardim de inverno
-		if((xMouse>=18 && yMouse<=4) || (xMouse>=19 && yMouse==5))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.INVERNO)
 			if(distanciaValida(18, 5, xJogador, yJogador, passo-1) && !jogadorEm(18, 5, indexJogador))
 
 				return true;
 		//Dentro do salao de jogos
-		if(xMouse>=18 && yMouse>=8 && yMouse<=12)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.JOGOS)
 			if(((distanciaValida(17, 9, xJogador, yJogador, passo-1) && !jogadorEm(17,9, indexJogador)) || (distanciaValida(22, 13, xJogador, yJogador, passo-1) && !jogadorEm(22,13, indexJogador))))
 				return true;
 		//Dentro da biblioteca
-		if((xMouse>=18 && (yMouse==14 || yMouse==18)) || (xMouse>=17 && yMouse>=15 && yMouse<=17))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.BIBLIOTECA)
 			if(((distanciaValida(16, 16, xJogador, yJogador, passo-1) && !jogadorEm(16,16, indexJogador)) || (distanciaValida(20, 13, xJogador, yJogador, passo-1) && !jogadorEm(20,13, indexJogador))))
 				return true;
 		//Dentro do escritorio
-		if(xMouse>=17 && yMouse>=21)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.ESCRITORIO)
 			if(distanciaValida(17, 20, xJogador, yJogador, passo-1) && !jogadorEm(17,20, indexJogador))
 				return true;
 		//Dentro da entrada
-		if(xMouse>=9 && xMouse<=14 && yMouse>=18)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.ENTRADA)
 			if((					(distanciaValida(11, 17, xJogador, yJogador, passo-1) && !jogadorEm(11,17, indexJogador)) ||
 									(distanciaValida(12, 17, xJogador, yJogador, passo-1) && !jogadorEm(12,17, indexJogador)) ||
 									(distanciaValida(15, 20, xJogador, yJogador, passo-1) && !jogadorEm(15,20, indexJogador))) )
 				return true;
 		//Dentro da sala de estar
-		if(xMouse<=6 && yMouse>=19)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.ESTAR)
 			if(distanciaValida(6, 19, xJogador, yJogador, passo-1) && !jogadorEm(6,19, indexJogador))
 				return true;
 		//Dentro da sala de jantar
-		if((xMouse<=4 && yMouse==9) || (xMouse<=7 && yMouse>=10 & yMouse<=15)){
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.JANTAR){
 			if(((distanciaValida(8, 12, xJogador, yJogador, passo-1) && !jogadorEm(8,12, indexJogador)) || (distanciaValida(6, 16, xJogador, yJogador, passo-1) && !jogadorEm(6,16, indexJogador))))
 				return true;}
 
@@ -198,69 +306,55 @@ public class Tabuleiro {
 	}
 	private boolean movimentacaoValidaSaindoComodo(int xMouse, int yMouse, int xJogador, int yJogador, int passo, int indexJogador){
 		//Dentro da cozinha
-		if(xJogador<=5 && yJogador <= 6)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.COZINHA)
 			if(distanciaValida(4, 6, xMouse, yMouse, passo-1) && !jogadorEm(4,6, indexJogador))
 				return true;
 		//Dentro da sala de musica
-		if((xJogador>=10 && xJogador<=13 && (yJogador==1 || yJogador==0)) || (xJogador>=8 && xJogador<=15 && yJogador>=2 && yJogador<=7))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.MUSICA)
 			if(	(distanciaValida(7, 5, xMouse, yMouse, passo-1)  && !jogadorEm(7,5, indexJogador)) 	|| 
 				(distanciaValida(16, 5, xMouse, yMouse, passo-1) && !jogadorEm(16,5, indexJogador))  	||
 				(distanciaValida(9, 8, xMouse, yMouse, passo-1)  && !jogadorEm(9,8, indexJogador)) 	||
 				(distanciaValida(14, 8, xMouse, yMouse, passo-1) && !jogadorEm(14,8, indexJogador))	)	
 				return true;
 		//Dentro do jardim de inverno
-		if((xJogador>=18 && yJogador<=4) || (xJogador>=19 && yJogador==5))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.INVERNO)
 			if(distanciaValida(18, 5, xMouse, yMouse, passo-1) && !jogadorEm(18, 5, indexJogador))
 
 				return true;
 		//Dentro do salao de jogos
-		if(xJogador>=18 && yJogador>=8 && yJogador<=12)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.JOGOS)
 			if(((distanciaValida(17, 9, xMouse, yMouse, passo-1) && !jogadorEm(17,9, indexJogador)) || (distanciaValida(22, 13, xMouse, yMouse, passo-1) && !jogadorEm(22,13, indexJogador))))
 				return true;
 		//Dentro da biblioteca
-		if((xJogador>=18 && (yJogador==14 || yJogador==18)) || (xJogador>=17 && yJogador>=15 && yJogador<=17))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.BIBLIOTECA)
 			if(((distanciaValida(16, 16, xMouse, yMouse, passo-1) && !jogadorEm(16,16, indexJogador)) || (distanciaValida(20, 13, xMouse, yMouse, passo-1) && !jogadorEm(20,13, indexJogador))))
 				return true;
 		//Dentro do escritorio
-		if(xJogador>=17 && yJogador>=21)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.ESCRITORIO)
 			if(distanciaValida(17, 20, xMouse, yMouse, passo-1) && !jogadorEm(17,20, indexJogador))
 				return true;
 		//Dentro da entrada
-		if(xJogador>=9 && xJogador<=14 && yJogador>=18)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.ENTRADA)
 			if((					(distanciaValida(11, 17, xMouse, yMouse, passo-1) && !jogadorEm(11,17, indexJogador)) ||
 									(distanciaValida(12, 17, xMouse, yMouse, passo-1) && !jogadorEm(12,17, indexJogador)) ||
 									(distanciaValida(15, 20, xMouse, yMouse, passo-1) && !jogadorEm(15,20, indexJogador))) )
 				return true;
 		//Dentro da sala de estar
-		if(xJogador<=6 && yJogador>=19)
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.ESTAR)
 			if(distanciaValida(6, 19, xMouse, yMouse, passo-1) && !jogadorEm(6,19, indexJogador))
 				return true;
 		//Dentro da sala de jantar
-		if((xJogador<=4 && yJogador==9) || (xJogador<=7 && yJogador>=10 & yJogador<=15))
+		if(matriz[xMouse + yMouse*matriz_numColunas] == ObservedGame.JANTAR)
 			if(((distanciaValida(8, 12, xMouse, yMouse, passo-1) && !jogadorEm(8,12, indexJogador)) || (distanciaValida(6, 16, xMouse, yMouse, passo-1) && !jogadorEm(6,16, indexJogador))))
 				return true;
 
 		return false;		
 	}
 	private boolean emComodo(int x, int y) {
-		//Dentro da cozinha
-		if(x<=5 && y <= 6)																	return true;
-		//Dentro da sala de musica
-		if((x>=10 && x<=13 && (y==1 || y==0) ) || (x>=8 && x<=15 && y>=2 && y<=7))			return true;
-		//Dentro do jardim de inverno
-		if((x>=18 && y<=4) || (x>=19 && y==5))												return true;
-		//Dentro do salao de jogos
-		if(x>=18 && y>=8 && y<=12)															return true;
-		//Dentro da biblioteca
-		if((x>=18 && (y==14 || y==18)) || (x>=17 && y>=15 && y<=17))						return true;
-		//Dentro do escritorio
-		if(x>=17 && y>=21)																	return true;
-		//Dentro da entrada
-		if(x>=9 && x<=14 && y>=18)															return true;
-		//Dentro da sala de estar
-		if(x<=6 && y>=19)																	return true;
-		//Dentro da sala de jantar
-		if((x<=4 && y==9) || (x<=7 && y>=10 & y<=15))										return true;
+		if(matriz[x + y*matriz_numColunas] == ObservedGame.COZINHA || matriz[x + y*matriz_numColunas] == ObservedGame.ESTAR || matriz[x + y*matriz_numColunas] == ObservedGame.JANTAR
+		|| matriz[x + y*matriz_numColunas] == ObservedGame.MUSICA || matriz[x + y*matriz_numColunas] == ObservedGame.ENTRADA || matriz[x + y*matriz_numColunas] == ObservedGame.INVERNO
+		|| matriz[x + y*matriz_numColunas] == ObservedGame.JOGOS || matriz[x + y*matriz_numColunas] == ObservedGame.BIBLIOTECA || matriz[x + y*matriz_numColunas] == ObservedGame.ESCRITORIO)
+			return true;
 		return false;
 	}
 	
@@ -276,32 +370,192 @@ public class Tabuleiro {
 		return false;
 	}
 
-	public void mudaPos(int pixelX, int pixelY, int indexJogador) {
+	public void mudaPosJogador(int pixelX, int pixelY, int indexJogador) {
 
 			int x = pixelX/matriz_larguraColuna;
 			int y = pixelY/matriz_alturaLinha;
-			
+			int flag = 0;
 			for(int i=0; i<getTamanhoTabuleiro(); i++){
 				if(matriz[i] == indexJogador){
 					matriz[i] = Tabuleiro.VAZIO;
+					flag = 1;
 					break;
 				}
 			}
-			matriz[x+y*matriz_numColunas] = indexJogador;
+			if(flag==0)
+			{
+				for(int i=0; i<ObservedGame.numRooms; i++){
+					for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+					{
+						if(comodos[i][j] == indexJogador){
+							comodos[i][j] = Tabuleiro.VAZIO;
+							break;
+						}
+					}
+				}
+			}
+			if(emComodo(x,y))
+			{
+				switch(matriz[x + y*matriz_numColunas])
+				{
+				case(ObservedGame.COZINHA):	
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[0][i] == Tabuleiro.VAZIO){
+							comodos[0][i] = indexJogador;
+							break;
+						}
+					break;		
+				case(ObservedGame.JANTAR):
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[1][i] == Tabuleiro.VAZIO){
+							comodos[1][i] = indexJogador;
+							break;
+						}
+					break;					
+				case(ObservedGame.ESTAR):		
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[2][i] == Tabuleiro.VAZIO){
+							comodos[2][i] = indexJogador;
+							break;
+						}
+					break;					
+				case(ObservedGame.MUSICA):		
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[3][i] == Tabuleiro.VAZIO){
+							comodos[3][i] = indexJogador;
+							break;
+						}
+					break;					
+				case(ObservedGame.ENTRADA):	
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[4][i] == Tabuleiro.VAZIO){
+							comodos[4][i] = indexJogador;
+							break;
+						}
+					break;					
+				case(ObservedGame.INVERNO):
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[5][i] == Tabuleiro.VAZIO){
+							comodos[5][i] = indexJogador;
+							break;
+						}
+					break;
+				case(ObservedGame.JOGOS):
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[6][i] == Tabuleiro.VAZIO){
+							comodos[6][i] = indexJogador;
+							break;
+						}
+					break;
+				case(ObservedGame.BIBLIOTECA):
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[7][i] == Tabuleiro.VAZIO){
+							comodos[7][i] = indexJogador;
+							break;
+						}
+					break;
+				case(ObservedGame.ESCRITORIO):
+					for(int i=0; i<ObservedGame.numPlayers+ObservedGame.numWeapons; i++)
+						if(comodos[8][i] == Tabuleiro.VAZIO){
+							comodos[8][i] = indexJogador;
+							break;
+						}
+					break;
+						
+				}
+			}
+			else
+				matriz[x+y*matriz_numColunas] = indexJogador;
+			
 			
 	}
+	public void mudaPosArma(int indexComodo, int indexArma) {
+		for(int j=0; j<9; j++)
+			for(int i=0; i<12; i++)
+				if(comodos[j][i] == indexArma)
+				{
+					comodos[j][i] = Tabuleiro.VAZIO;
+				}
+		
+		switch(indexComodo)
+		{
+		case (ObservedGame.COZINHA):		
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.COZINHA - 12][i] == -1){
+					comodos[ObservedGame.COZINHA - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.JANTAR):			
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.JANTAR - 12][i] == -1){
+					comodos[ObservedGame.JANTAR - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.ESTAR):			
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.ESTAR - 12][i] == -1){
+					comodos[ObservedGame.ESTAR - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.MUSICA):			
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.MUSICA - 12][i] == -1){
+					comodos[ObservedGame.MUSICA - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.ENTRADA):			
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.ENTRADA - 12][i] == -1){
+					comodos[ObservedGame.ENTRADA - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.INVERNO):		
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.INVERNO - 12][i] == -1){
+					comodos[ObservedGame.INVERNO - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.JOGOS):			
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.JOGOS - 12][i] == -1){
+					comodos[ObservedGame.JOGOS - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.BIBLIOTECA):		
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.BIBLIOTECA - 12][i] == -1){
+					comodos[ObservedGame.BIBLIOTECA - 12][i] = indexArma;
+					break;
+				}
+			break;
+		case (ObservedGame.ESCRITORIO):		
+			for(int i=0; i<12;i++)
+				if(comodos[ObservedGame.ESCRITORIO - 12][i] == -1){
+					comodos[ObservedGame.ESCRITORIO - 12][i] = indexArma;
+					break;
+				}
+			break;
+		}
+}
 	
 	public double getEscalaHorizontal(){
 		return img_escalaHorizontal;
 	}
 	public void setEscalaHorizontal(double width){
-		img_escalaHorizontal = width/img.getWidth();
+		img_escalaHorizontal = width/imgTabuleiro.getWidth();
 	}
 	public double getEscalaVertical(){
 		return img_escalaVertical;
 	}
 	public void setEscalaVertical(double height){
-		img_escalaVertical = height/img.getHeight();
+		img_escalaVertical = height/imgTabuleiro.getHeight();
 	}
 
 	public void AdicionaAlcance(int die, int jogador) {
@@ -338,7 +592,7 @@ public class Tabuleiro {
 	}
 	public void removeAlcance() {
 		for(int i=0; i<getTamanhoTabuleiro(); i++)
-			if(matriz[i] == Tabuleiro.ALCANCE)
+			if(matriz[i] == Tabuleiro.ALCANCE)	
 				matriz[i] = Tabuleiro.VAZIO;
 	}
 }

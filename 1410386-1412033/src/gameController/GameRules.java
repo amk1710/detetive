@@ -6,7 +6,7 @@ import java.util.Observer;
 import java.util.Random;
 import java.util.Vector;
 
-//classe que controlam regras do jogo, recebendo ações da GUI através da interface ObservedGame e notificando mudanças
+//classe que controlam regras do jogo, recebendo aï¿½ï¿½es da GUI atravï¿½s da interface ObservedGame e notificando mudanï¿½as
 class GameRules extends Observable implements ObservedGame
 {
 	private GameRules gr;
@@ -17,7 +17,7 @@ class GameRules extends Observable implements ObservedGame
 	private boolean[] activePlayers;
 	private int currentTurn;
 	private int die;
-	//diz se dado já foi rolado esse turno
+	//diz se dado jï¿½ foi rolado esse turno
 	private boolean dieWasRolled;
 	private boolean hasGuessed;
 	
@@ -60,6 +60,7 @@ class GameRules extends Observable implements ObservedGame
 			}
 		}
 		
+		positionWeapons();
 		dealCards();
 	}
 	
@@ -69,10 +70,10 @@ class GameRules extends Observable implements ObservedGame
 		
 	}
 	
-	private void notifyView()
+	public void notifyObservers()
 	{
 		setChanged();
-		notifyObservers();
+		super.notifyObservers();
 	}
 	
 	public void addObserver(Observer o) 
@@ -91,7 +92,7 @@ class GameRules extends Observable implements ObservedGame
 		
 		dieWasRolled = true;
 		die = (1+ roller.nextInt(6));
-		notifyView();
+		notifyObservers();
 	}
 
 	public int getDie() {
@@ -111,7 +112,7 @@ class GameRules extends Observable implements ObservedGame
 		}
 		dieWasRolled = false;
 		hasGuessed = false;
-		notifyView();
+		notifyObservers();
 	}
 
 	
@@ -175,7 +176,7 @@ class GameRules extends Observable implements ObservedGame
 		return tabuleiro;
 	}
 
-	//funções auxiliares
+	//funï¿½ï¿½es auxiliares
 	
 	public Card[] getPlayerHand(int i) 
 	{
@@ -185,7 +186,20 @@ class GameRules extends Observable implements ObservedGame
 		return hand;
 	}
 	
-	//função distribui as cartas de jogo pelos jogadores
+	private void positionWeapons()
+	{
+		int indexComodo;
+		for(int i=0; i<ObservedGame.numWeapons; i++)
+		{
+			indexComodo = roller.nextInt(ObservedGame.numRooms);
+			if(tabuleiro.comodos[indexComodo][0] == Tabuleiro.VAZIO)
+				tabuleiro.comodos[indexComodo][0] = ObservedGame.CORDA + i;
+			else
+				i--;
+		}
+	}
+	
+	//funï¿½ï¿½o distribui as cartas de jogo pelos jogadores
 	private void dealCards()
 	{
 		Vector<Card> allCards = new Vector<Card>();
@@ -212,7 +226,7 @@ class GameRules extends Observable implements ObservedGame
 		Collections.shuffle(weapons);
 		Collections.shuffle(rooms);
 		
-		//tira três cartas para o envelope confidencial
+		//tira trï¿½s cartas para o envelope confidencial
 		answer = new Card[3];
 		answer[0] = suspects.remove(suspects.size() - 1);
 		answer[1] = weapons.remove(weapons.size() - 1);
@@ -253,7 +267,7 @@ class GameRules extends Observable implements ObservedGame
 	public Card guess(int suspectID, int weaponID, int roomID) 
 	{
 		hasGuessed = true;
-		//checa se há alguma carta na própria mão
+		//checa se hï¿½ alguma carta na prï¿½pria mï¿½o
 		for(Card c: playerCards[currentTurn])
 		{
 			if(	(c.type == CardType.SUSPECT && c.id == suspectID) 
@@ -265,7 +279,7 @@ class GameRules extends Observable implements ObservedGame
 				}
 		}
 		
-		//checa se há alguma carta em alguma outra mão
+		//checa se hï¿½ alguma carta em alguma outra mï¿½o
 		int i = (currentTurn+1)%6;
 		while(i != (currentTurn+1)%6)
 		{
@@ -282,7 +296,7 @@ class GameRules extends Observable implements ObservedGame
 			i = (i+1)%6;
 		}
 		
-		//se nenhuma está em nenhuma mão, as três estão no envelope confidencial
+		//se nenhuma estï¿½ em nenhuma mï¿½o, as trï¿½s estï¿½o no envelope confidencial
 		return null;
 	}
 

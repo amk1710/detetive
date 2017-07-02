@@ -10,6 +10,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 
+import gameController.GameRulesFactory;
 import gameController.ObservedGame;
 import gameView.GameView;
 
@@ -29,22 +30,22 @@ public class StartGameHandler{
 				if(e.getStateChange() == ItemEvent.SELECTED){
 					numActive++;
 					switch(source.getText()){
-						case("Reverendo Green"):  playerActive[0] = true; break;
-						case("Coronel Mustard"):  playerActive[1] = true; break;
-						case("Senhora Peacock"):  playerActive[2] = true; break;
-						case("Professor Plum"):   playerActive[3] = true; break;
-						case("Senhorita Scarlet"):playerActive[4] = true; break;
-						case("Senhora White"):    playerActive[5] = true; break;
+						case("Senhorita Scarlet"):  playerActive[ObservedGame.SCARLET] = true; break;
+						case("Coronel Mustard"):  	playerActive[ObservedGame.MUSTARD] = true; break;
+						case("Senhora White"):  	playerActive[ObservedGame.WHITE] = true; break;
+						case("Reverendo Green"):   	playerActive[ObservedGame.GREEN] = true; break;
+						case("Senhora Peacock"):	playerActive[ObservedGame.PEACOCK] = true; break;
+						case("Professor Plum"):    	playerActive[ObservedGame.PLUM] = true; break;
 					}
 				} else if(e.getStateChange() == ItemEvent.DESELECTED && numActive>0){
 					numActive--;
 					switch(source.getText()){
-					case("Reverendo Green"):  playerActive[0] = false; break;
-					case("Coronel Mustard"):  playerActive[1] = false; break;
-					case("Senhora Peacock"):  playerActive[2] = false; break;
-					case("Professor Plum"):   playerActive[3] = false; break;
-					case("Senhorita Scarlet"):playerActive[4] = false; break;
-					case("Senhora White"):    playerActive[5] = false; break;
+					case("Senhorita Scarlet"):  playerActive[ObservedGame.SCARLET] = false; break;
+					case("Coronel Mustard"):  	playerActive[ObservedGame.MUSTARD] = false; break;
+					case("Senhora White"):  	playerActive[ObservedGame.WHITE] = false; break;
+					case("Reverendo Green"):   	playerActive[ObservedGame.GREEN] = false; break;
+					case("Senhora Peacock"):	playerActive[ObservedGame.PEACOCK] = false; break;
+					case("Professor Plum"):    	playerActive[ObservedGame.PLUM] = false; break;
 					}
 				}
 			}
@@ -56,10 +57,11 @@ public class StartGameHandler{
 				if(numActive >= ObservedGame.minPlayers){
 					System.out.println(playerActive[0] + "\n" + playerActive[1] + "\n" + playerActive[2] + "\n" + 
 									   playerActive[3] + "\n" + playerActive[4] + "\n" + playerActive[5] + "\n");
-					//GameScreen game = new GameScreen("DETETIVE - CLUE ", playerActive);
+					
+					//Inicializa regras do jogo e cria janela de jogo
+					GameRulesFactory.getGameInstance(playerActive);
 					GameView view = new GameView("DETETIVE - CLUE ", playerActive);
 					System.out.println(view.toString());
-					//game.setVisible(true);
 					view.setVisible(true);
 					JRootPane contentPane = ((JButton)e.getSource()).getRootPane();
 					JFrame j = (JFrame) contentPane.getParent();

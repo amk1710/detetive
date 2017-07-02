@@ -29,7 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 //classe view que se registra como observadora e interage com o jogo
-public class GameView extends JFrame implements Observer
+public class GameView extends JFrame //implements Observer
 {
 
 	ObservedGame gc;
@@ -38,9 +38,6 @@ public class GameView extends JFrame implements Observer
 	private NotesButtonPanel notesP;
 	private CardsButtonPanel cardsP;
 	
-	String[] playerNames = {"Reverendo Green", "Coronel Mustard", "Senhora Peacock", "Professor Plum", "Senhorita Scarlet","Senhora White"};
-	String[] weaponNames = {"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver"};
-	String[] roomNames = {"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de Música", "Entrada", "Jardim de Inverno", "Salão de Jogos", "Biblioteca", "Escritório"};
 	
 	//construtor para novo jogo
 	public GameView(String s, boolean[] activePlayer)
@@ -49,12 +46,12 @@ public class GameView extends JFrame implements Observer
 		//setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		gc = GameRulesFactory.getGameInstance(activePlayer);
-		gc.addObserver(this);		
+		gc = GameRulesFactory.getGameInstance();
+		//gc.addObserver(this);		
 		
 		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
 		die = new DieDisplay(gc);
-		grid = new PainelTabuleiro(activePlayer, gc, this);
+		grid = new PainelTabuleiro(gc, this);
 		notesP = new NotesButtonPanel(gc, this);
 		cardsP = new CardsButtonPanel(this);
 		
@@ -74,14 +71,14 @@ public class GameView extends JFrame implements Observer
 		
 				
 	}
-	
+	/*
 	public void update(Observable o, Object arg)
 	{
 		this.repaint();
 		die.repaint();
 		grid.repaint();
 	}	
-
+	 */
 }
 
 //painel que interage com e exibe resultado dos dados do jogo
@@ -225,7 +222,7 @@ class NotesButtonPanel extends JPanel
 		gv = gameview;
 		
 		
-		//botão usado para abrir a janela das notas
+		//botï¿½o usado para abrir a janela das notas
         JButton notesB = new JButton("Ver Notas");
 		notesB.addActionListener(new NotesButtonHandler(gc, gv));
 		
@@ -257,7 +254,7 @@ class CardsButtonPanel extends JPanel
 	{
 		gv = gameview;		
 		
-		//botão usado para abrir a janela com as cartas do jogador
+		//botï¿½o usado para abrir a janela com as cartas do jogador
         JButton myCardsB = new JButton("Ver Minhas Cartas");
         myCardsB.addActionListener(new MyCardsButtonHandler(gv));
 		
@@ -286,13 +283,9 @@ class PainelTabuleiro extends JPanel implements Observer
 	private GameView gv;
 	private Tabuleiro tabuleiro = null;
 	
-	//Players info
-	private boolean[] playerActive = null;
-	
-	public PainelTabuleiro(boolean[] playerActive, ObservedGame game, GameView gameview)
+	public PainelTabuleiro(ObservedGame game, GameView gameview)
 	{
 	
-		this.playerActive = playerActive;
 		this.gc = game;
 		this.gc.addObserver(this);
 		this.tabuleiro = gc.getTabuleiro();
@@ -315,19 +308,19 @@ class PainelTabuleiro extends JPanel implements Observer
 			public void mouseClicked(MouseEvent e) {
 				if( gc.getDieWasRolled() && tabuleiro.posValida(e.getX(), e.getY(), gc.getDie(), gc.getTurn(), true)){
 					//Muda posiÃ§Ã£o do jogador 
-					tabuleiro.mudaPos(e.getX(), e.getY(), gc.getTurn());
+					tabuleiro.mudaPosJogador(e.getX(), e.getY(), gc.getTurn());
 					tabuleiro.removeAlcance();
 					//Manda repintar
 					repaint();
 					//abre janela de palpite
-					//TO-DO janela de palpite só deve ser aberta se jogador entrar em um comodo
+					//TO-DO se entrar em comodo chamar uma funÃ§ao para notificar painel de acoes e oferecer opcao de dar palpite
 					//if()
 					//{
 						GuessWindow gw = new GuessWindow("Palpite", gv);
 						gw.setVisible(true);
 					//}
 					
-					//Passa a vez. Agora? Melhor por um botão né?
+					//Passa a vez. Agora? Melhor por um botï¿½o nï¿½?
 					gc.endTurn();
 				}
 			}
@@ -339,13 +332,13 @@ class PainelTabuleiro extends JPanel implements Observer
 	}
 
 	public Dimension getPreferredSize() {
-        return new Dimension((int) (tabuleiro.img.getWidth()*tabuleiro.getEscalaHorizontal()), (int) (tabuleiro.img.getHeight()*tabuleiro.getEscalaVertical()));
+        return new Dimension((int) (tabuleiro.imgTabuleiro.getWidth()*tabuleiro.getEscalaHorizontal()), (int) (tabuleiro.imgTabuleiro.getHeight()*tabuleiro.getEscalaVertical()));
     }
 	
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		g.drawImage(tabuleiro.img, 0, 0, (int) (tabuleiro.img.getWidth()*tabuleiro.getEscalaHorizontal()), (int) (tabuleiro.img.getHeight()*tabuleiro.getEscalaVertical()), this);
+		g.drawImage(tabuleiro.imgTabuleiro, 0, 0, (int) (tabuleiro.imgTabuleiro.getWidth()*tabuleiro.getEscalaHorizontal()), (int) (tabuleiro.imgTabuleiro.getHeight()*tabuleiro.getEscalaVertical()), this);
 		Graphics2D g2d  = (Graphics2D) g;
 		
 		
@@ -355,33 +348,83 @@ class PainelTabuleiro extends JPanel implements Observer
 						g2d.setColor(Tabuleiro.corAlcance);
 						g2d.fillRect(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
-					case Tabuleiro.GREEN:
+					case ObservedGame.GREEN:
 						g2d.setColor(Tabuleiro.corGreen);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
-					case Tabuleiro.MUSTARD:
+					case ObservedGame.MUSTARD:
 						g2d.setColor(Tabuleiro.corMustard);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
-					case Tabuleiro.PEACOCK:
+					case ObservedGame.PEACOCK:
 						g2d.setColor(Tabuleiro.corPeacock);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
-					case Tabuleiro.PLUM:
+					case ObservedGame.PLUM:
 						g2d.setColor(Tabuleiro.corPlum);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
-					case Tabuleiro.SCARLET:
+					case ObservedGame.SCARLET:
 						g2d.setColor(Tabuleiro.corScarlet);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
-					case Tabuleiro.WHITE:
+					case ObservedGame.WHITE:
 						g2d.setColor(Tabuleiro.corWhite);
 						g2d.fillOval(tabuleiro.getXPosJogador(i), tabuleiro.getYPosJogador(i), tabuleiro.getDX(), tabuleiro.getDY());
 						break;
 				}
-				
-			}
+		}
+				for(int k=0; k< ObservedGame.numRooms; k++)
+				{
+					for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+					{
+						switch(tabuleiro.comodos[k][j])
+						{
+						case ObservedGame.GREEN:
+							g2d.setColor(Tabuleiro.corGreen);
+							g2d.fillOval(tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY());
+							break;
+						case ObservedGame.MUSTARD:
+							g2d.setColor(Tabuleiro.corMustard);
+							g2d.fillOval(tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY());
+							break;
+						case ObservedGame.PEACOCK:
+							g2d.setColor(Tabuleiro.corPeacock);
+							g2d.fillOval(tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY());
+							break;
+						case ObservedGame.PLUM:
+							g2d.setColor(Tabuleiro.corPlum);
+							g2d.fillOval(tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY());
+							break;
+						case ObservedGame.SCARLET:
+							g2d.setColor(Tabuleiro.corScarlet);
+							g2d.fillOval(tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY());
+							break;
+						case ObservedGame.WHITE:
+							g2d.setColor(Tabuleiro.corWhite);
+							g2d.fillOval(tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY());
+							break;
+						case ObservedGame.CORDA:
+							g.drawImage(tabuleiro.imgCorda, tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY(), this);
+							break;
+						case ObservedGame.CANO:
+							g.drawImage(tabuleiro.imgCano, tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY(), this);
+							break;
+						case ObservedGame.FACA:
+							g.drawImage(tabuleiro.imgFaca, tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY(), this);
+							break;
+						case ObservedGame.CHAVE:
+							g.drawImage(tabuleiro.imgChave, tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY(), this);
+							break;
+						case ObservedGame.CASTICAL:
+							g.drawImage(tabuleiro.imgCastical, tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY(), this);
+							break;
+						case ObservedGame.REVOLVER:
+							g.drawImage(tabuleiro.imgRevolver, tabuleiro.getXComodo(j, k), tabuleiro.getYComodo(j, k), tabuleiro.getDX(), tabuleiro.getDY(), this);
+							break;		
+						}
+					}
+				}
 	}
 
 	public void update(Observable o, Object obj) {

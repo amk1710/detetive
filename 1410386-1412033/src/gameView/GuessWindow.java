@@ -82,7 +82,7 @@ class GuessControl extends JPanel{
 	
 	int suspectID;
 	int weaponID;
-	//roomId é fixo no quarto
+	//roomId ï¿½ fixo no quarto
 	final int roomID;
 	
 	
@@ -137,7 +137,7 @@ class GuessControl extends JPanel{
 		suspectButtons = new JRadioButton[6];
 		for(int i = 0; i < suspectButtons.length; i++)
 		{
-			suspectButtons[i] = new JRadioButton(gv.playerNames[i]);
+			suspectButtons[i] = new JRadioButton(ObservedGame.NAMES[i + ObservedGame.SCARLET]);
 			suspectButtons[i].addActionListener(Plistener);
 			suspectGroup.add(suspectButtons[i]);
 			
@@ -147,14 +147,14 @@ class GuessControl extends JPanel{
 		weaponButtons = new JRadioButton[6];
 		for(int i = 0; i < weaponButtons.length; i++)
 		{
-			weaponButtons[i] = new JRadioButton(gv.weaponNames[i]);
+			weaponButtons[i] = new JRadioButton(ObservedGame.NAMES[i + ObservedGame.CORDA]);
 			weaponButtons[i].addActionListener(Wlistener);
 			weaponGroup.add(weaponButtons[i]);
 			
 		}
 		
 		//TO-DO pegar quarto correto
-		roomButton = new JRadioButton(gv.roomNames[0]);
+		roomButton = new JRadioButton(ObservedGame.NAMES[ObservedGame.COZINHA]);
 		
 		
 			
