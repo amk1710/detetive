@@ -43,6 +43,7 @@ public interface ObservedGame
 											"Corda", "Cano de Chumbo", "Faca", "Chave Inglesa", "Castiçal", "Revólver",      
 											"Cozinha", "Sala de Jantar", "Sala de Estar", "Sala de M�sica", "Entrada", "Jardim de Inverno", "Sal�o de Jogos", "Biblioteca", "Escrit�rio"};
 	
+	
 	public void addObserver(Observer o);
 	
 	

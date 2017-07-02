@@ -34,6 +34,7 @@ class GameRules extends Observable implements ObservedGame
 	//construtor para novo jogo
 	public GameRules(boolean[] activePlayer)
 	{
+		
 		roller = new Random();
 		dieWasRolled = false;
 		die = 1;
@@ -232,9 +233,14 @@ class GameRules extends Observable implements ObservedGame
 		answer[1] = weapons.remove(weapons.size() - 1);
 		answer[2] = rooms.remove(rooms.size() - 1);
 		
+		
+		System.out.println("answer:" + answer[0].getName() + answer[1].getName() + answer[2].getName());
+		
 		allCards.addAll(suspects);
 		allCards.addAll(weapons);
 		allCards.addAll(rooms);
+		
+		
 		
 		
 		//distribui demais cartas entre os jogadores
@@ -260,8 +266,6 @@ class GameRules extends Observable implements ObservedGame
 			i = (i+1) % ObservedGame.numPlayers;
 		}
 		
-		
-		
 	}
 
 	public Card guess(int suspectID, int weaponID, int roomID) 
@@ -281,7 +285,7 @@ class GameRules extends Observable implements ObservedGame
 		
 		//checa se h� alguma carta em alguma outra m�o
 		int i = (currentTurn+1)%6;
-		while(i != (currentTurn+1)%6)
+		while(i !=currentTurn)
 		{
 			for(Card c: playerCards[i])
 			{
@@ -297,6 +301,8 @@ class GameRules extends Observable implements ObservedGame
 		}
 		
 		//se nenhuma est� em nenhuma m�o, as tr�s est�o no envelope confidencial
+		System.out.println("acertou!");
+		if(!accuse(suspectID, weaponID, roomID)) System.out.println("bugou legal!");
 		return null;
 	}
 
