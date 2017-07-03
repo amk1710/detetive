@@ -130,6 +130,8 @@ class GuessControl extends JPanel{
 		c.insets = new Insets(0, 0, 0, 0);
 		
 		gv = gameview;
+		suspectID = -1;
+		weaponID = -1;
 		
 		//TO-DO pegar room certa
 		
@@ -248,6 +250,7 @@ class GuessHandler implements ActionListener
 	
 	public void actionPerformed(ActionEvent arg0) 
 	{
+		
 		if(!gw.gv.gc.getHasGuessed() && gw.guess.suspectID != -1 && gw.guess.weaponID != -1)
 		{
 			Card c = gw.gv.gc.guess(gw.guess.suspectID, gw.guess.weaponID, gw.guess.roomID);
