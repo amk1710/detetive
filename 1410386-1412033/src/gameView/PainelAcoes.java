@@ -29,6 +29,8 @@ public class PainelAcoes extends JPanel implements Observer {
 	JButton rollDie;
 	JButton myCardsB;
 	JButton accuseB;
+	JButton endB;
+	JButton saveB;
 	private DieDisplay die;
 	
 	public PainelAcoes(GameView gameview)
@@ -63,6 +65,14 @@ public class PainelAcoes extends JPanel implements Observer {
         //botï¿½o usado para acusaï¿½ï¿½o
         accuseB =  new JButton("Acusar");
         accuseB.addActionListener(new AccuseButtonHandler(gv));
+        
+      //bot�o usado para passar de turno
+        endB =  new JButton("Passa turno");
+        endB.addActionListener(new PassButtonHandler(gv));
+        
+      //bot�o usado para salvar o jogo
+        saveB =  new JButton("Salva jogo");
+        saveB.addActionListener(new SaveHandler(gv));
 		
         c.gridy=0;
         add(die, c);
@@ -72,6 +82,12 @@ public class PainelAcoes extends JPanel implements Observer {
 		add(myCardsB, c);
 		c.gridy=3;
 		add(notesB, c);
+		c.gridy = 4;
+		add(accuseB, c);		
+		c.gridy = 5;
+		add(endB, c);
+		c.gridy = 6;
+		add(saveB, c);
 		
 				
 	}
@@ -252,3 +268,5 @@ class CardsButtonPanel extends JPanel
 	
 	
 }
+
+

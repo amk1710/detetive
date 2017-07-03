@@ -68,6 +68,40 @@ public class GameView extends JFrame //implements Observer
 		
 				
 	}
+	
+	public GameView(String s, File input)
+	{
+		super (s);
+		//setResizable(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		gc = GameRulesFactory.getGameInstance(input);
+		//gc.addObserver(this);		
+		
+		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
+		
+		grid = new PainelTabuleiro(gc, this);
+		actions = new  PainelAcoes(this);
+		//infos   = new  PainelInformacoes(gc,this);
+
+
+		getContentPane().add(grid);
+		getContentPane().add(actions);
+		pack();
+		// Inicializa janela no tamanho default no centro da tela.
+		Toolkit tk=Toolkit.getDefaultToolkit();
+		Dimension screenSize=tk.getScreenSize();
+		int	sl=screenSize.width;
+		int	sa=screenSize.height;
+		
+		setBounds(0,0,(int)getContentPane().getPreferredSize().getWidth(),(int)getContentPane().getPreferredSize().getHeight());
+	}
+	
+	//chamada quando um jogador ganha ou todos perdem
+	void endGame()
+	{
+		this.dispose();
+	}
 }
 
 
@@ -115,8 +149,6 @@ class PainelTabuleiro extends JPanel implements Observer
 						gw.setVisible(true);
 					}
 					
-					//Passa a vez. Agora? Melhor por um bot�o n�?
-					gc.endTurn();
 				}
 			}
 			public void mouseEntered(MouseEvent arg0) {}
@@ -228,5 +260,5 @@ class PainelTabuleiro extends JPanel implements Observer
 			tabuleiro.AdicionaAlcance(gc.getDie(), gc.getTurn());
 			repaint();
 		}
-	}	
+	}
 }
