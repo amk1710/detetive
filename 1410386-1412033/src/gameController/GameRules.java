@@ -1,5 +1,8 @@
 package gameController;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
@@ -7,11 +10,11 @@ import java.util.Random;
 import java.util.Vector;
 
 //classe que controlam regras do jogo, recebendo a��es da GUI atrav�s da interface ObservedGame e notificando mudan�as
-class GameRules extends Observable implements ObservedGame
+class GameRules extends Observable implements ObservedGame, java.io.Serializable
 {
 	private GameRules gr;
 	
-	private Tabuleiro tabuleiro;
+	Tabuleiro tabuleiro;
 	
 	
 	private boolean[] activePlayers;
@@ -316,6 +319,9 @@ class GameRules extends Observable implements ObservedGame
 		return hasGuessed;
 	}
 
+	public boolean[] getActivePlayers() {
+		return activePlayers;
+	}
 	
 	public boolean accuse(int suspectID, int weaponID, int roomID) 
 	{
@@ -333,11 +339,28 @@ class GameRules extends Observable implements ObservedGame
 		}
 	}
 
-
-	public boolean[] getActivePlayers() {
-		return activePlayers;
+	
+	public boolean allLost() 
+	{
+		for(int i = 0; i < activePlayers.length; i++)
+		{
+			if(activePlayers[i]) return false;
+		}
+		return true;
 	}
 	
+	public void saveGame(FileOutputStream fileOut)
+	{
+		try {
+	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	         out.writeObject(this);
+	         out.close();
+	         fileOut.close();
+	         System.out.printf("Serialized data is saved!");
+	      }catch(IOException i) {
+	    	  System.out.println("Erro de salvamento:" + i.getMessage());
+	      }
+	}
 
 }
 

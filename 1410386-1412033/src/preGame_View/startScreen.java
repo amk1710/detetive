@@ -3,15 +3,12 @@ package preGame_View;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import preGame_Controller.NewGameHandler;
-import preGame_Controller.SavedGameHandler;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class startScreen extends JFrame {
+class startScreen extends JFrame {
 	private startScreen(String s)
 	{
 		super (s);

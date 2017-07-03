@@ -1,5 +1,10 @@
 package gameController;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 public class GameRulesFactory {
 	private static ObservedGame game = null;
 
@@ -16,8 +21,28 @@ public class GameRulesFactory {
 	}
 	
 	//get jogo salvo
-	public static void  getGameInstance2()
+	public static ObservedGame  getGameInstance(File input)
 	{
 		
+		GameRules temp;
+		try {
+	         FileInputStream fileIn = new FileInputStream(input);
+	         ObjectInputStream in = new ObjectInputStream(fileIn);
+	         temp = (GameRules) in.readObject();
+	         temp.tabuleiro.readImages();
+	         game = (ObservedGame) temp;
+	         in.close();
+	         fileIn.close();
+	      }catch(IOException i) {
+	    	  System.out.println("Read Error" + i.getMessage());
+	    	  i.printStackTrace();
+	      }catch(ClassNotFoundException c) {
+	         System.out.println("ObservedGame class not found" + c.getMessage());
+	         c.printStackTrace();
+	         
+	      }
+				
+		return game;
+	      
 	}
 }

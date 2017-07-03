@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GameScreen extends JFrame {
+class GameScreen extends JFrame {
 	public final int WIDTH	= 640;
 	public final int HEIGHT = 480;
 

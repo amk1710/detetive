@@ -62,6 +62,37 @@ public class GameView extends JFrame //implements Observer
 				
 	}
 	
+	//construtor para jogo salvo
+	public GameView(String s, File input)
+	{
+		super (s);
+		//setResizable(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		gc = GameRulesFactory.getGameInstance(input);	
+		
+		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 0));
+		
+		grid = new PainelTabuleiro(this);
+		actions = new  PainelAcoes(this);
+		infos   = new  PainelInformacoes(this);
+		
+		getContentPane().add(grid);
+		getContentPane().add(actions);
+		getContentPane().add(infos);
+		
+		setBounds(0,0, (int)this.getPreferredSize().getWidth()+80, (int)this.getPreferredSize().getHeight());
+		
+				
+	}
+	
+	//chamada quando um jogador ganha ou todos perdem
+	void endGame()
+	{
+		this.dispose();
+	}
+
+	
 	public int getHeight()
 	{
 		return (int)grid.getPreferredSize().getHeight();
@@ -110,14 +141,11 @@ class PainelTabuleiro extends JPanel implements Observer
 					repaint();
 					//abre janela de palpite
 					//TO-DO se entrar em comodo chamar uma funçao para notificar painel de acoes e oferecer opcao de dar palpite
-					//if()
-					//{
+					if(tabuleiro.emComodo(gc.getTurn()) != -1)
+					{
 						GuessWindow gw = new GuessWindow("Palpite", gv);
 						gw.setVisible(true);
-					//}
-					
-					//Passa a vez. Agora? Melhor por um bot�o n�?
-					gc.endTurn();
+					}
 				}
 			}
 			public void mouseEntered(MouseEvent arg0) {}

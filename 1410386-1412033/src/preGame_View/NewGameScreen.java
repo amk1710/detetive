@@ -8,9 +8,7 @@ import java.awt.Toolkit;
 
 import javax.swing.*;
 
-import preGame_Controller.StartGameHandler;
-
-public class NewGameScreen extends JFrame {
+class NewGameScreen extends JFrame {
 	public final int WIDTH	= 640;
 	public final int HEIGHT = 480;
 	
@@ -53,20 +51,20 @@ class PlayerSelection extends JPanel{
 		c.insets = new Insets(0, 0, 0, 0);	
 		
 		JCheckBox green		= new JCheckBox("Reverendo Green"); 	
-		green.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		green.addItemListener(preGame_View.StartGameHandler.getInstance().getCheckboxListener());
 		JCheckBox mustard	= new JCheckBox("Coronel Mustard"); 	
-		mustard.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		mustard.addItemListener(preGame_View.StartGameHandler.getInstance().getCheckboxListener());
 		JCheckBox peacock	= new JCheckBox("Senhora Peacock"); 	
-		peacock.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		peacock.addItemListener(preGame_View.StartGameHandler.getInstance().getCheckboxListener());
 		JCheckBox plum		= new JCheckBox("Professor Plum");  	
-		plum.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		plum.addItemListener(preGame_View.StartGameHandler.getInstance().getCheckboxListener());
 		JCheckBox scarlet	= new JCheckBox("Senhorita Scarlet");	
-		scarlet.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		scarlet.addItemListener(preGame_View.StartGameHandler.getInstance().getCheckboxListener());
 		JCheckBox white		= new JCheckBox("Senhora White"); 		
-		white.addItemListener(preGame_Controller.StartGameHandler.getInstance().getCheckboxListener());
+		white.addItemListener(preGame_View.StartGameHandler.getInstance().getCheckboxListener());
 		
 		JButton StartGame = new JButton("Iniciar jogo");
-		StartGame.addActionListener(preGame_Controller.StartGameHandler.getInstance().getButtonListener());
+		StartGame.addActionListener(preGame_View.StartGameHandler.getInstance().getButtonListener());
 		
 		c.weightx = 1;
 		c.weighty = 1;

@@ -33,6 +33,8 @@ public class PainelAcoes extends JPanel implements Observer {
 	JButton rollDie;
 	JButton myCardsB;
 	JButton accuseB;
+	JButton endB;
+	JButton saveB;
 	private DieDisplay die;
 	
 	public PainelAcoes(GameView gameview)
@@ -50,15 +52,30 @@ public class PainelAcoes extends JPanel implements Observer {
 		rollDie.addActionListener(new RollDieHandler(gc));
 		rollDie.setAlignmentX(CENTER_ALIGNMENT);
 		
+		//bot�o usado para passar de turno
+        endB =  new JButton("Passa turno");
+        endB.addActionListener(new PassButtonHandler(gv));
+        
+        //botï¿½o usado para acusaï¿½ï¿½o
+        accuseB =  new JButton("Acusar");
+        accuseB.addActionListener(new AccuseButtonHandler(gv));
+        
+        //bot�o usado para salvar o jogo
+        saveB =  new JButton("Salva jogo");
+        saveB.addActionListener(new SaveHandler(gv));
+		
 		passagemSecreta= new JButton("Usar passagem secreta");
 		passagemSecreta.addActionListener(new passagemSecretaHandler(gc));
-		//palpite
-		//acusar
+		
 		//usar passagem secreta
 		add(passagemSecreta);
 		passagemSecreta.setVisible(false);
+		
         add(Box.createVerticalGlue());
 		add(rollDie);
+		add(endB);
+		add(accuseB);
+		add(saveB);
 		add(Box.createRigidArea(new Dimension(0,10)));
         add(die);
 

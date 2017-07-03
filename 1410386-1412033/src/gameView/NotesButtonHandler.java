@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 
-import preGame_View.NewGameScreen;
 import gameController.ObservedGame;
 
 public class NotesButtonHandler implements ActionListener 

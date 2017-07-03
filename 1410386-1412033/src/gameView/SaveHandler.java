@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
 
-import preGame_View.NewGameScreen;
 import gameController.ObservedGame;
 
 class SaveHandler implements ActionListener 
