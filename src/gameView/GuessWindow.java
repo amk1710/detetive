@@ -11,16 +11,23 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import gameController.Card;
+import gameController.CardType;
 import gameController.ObservedGame;
 
 public class GuessWindow extends JFrame 
@@ -31,20 +38,42 @@ public class GuessWindow extends JFrame
 	GameView gv;
 	GuessControl guess;
 	JButton gb;
+	ImageIcon cardImage;
+	JLabel label;
 	
 	GuessWindow(String s, GameView gameview)
 	{
 		super (s);
 		gv = gameview;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setResizable(false);
+		setResizable(true);
 		
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0, 0, 0, 0);
 			
 		guess = new GuessControl(gv);
 		gb = new JButton("Palpitar");
-		gb.addActionListener(new GuessHandler(this));
+		try 
+		{
+			cardImage = new ImageIcon(ImageIO.read(new File("assets/blank.jpg")));
+			label = new JLabel(cardImage);
+		}  catch (IOException e)
+		{
+			System.out.println("Incapaz de abrir imagem. Erro:" + e.getMessage());
+			System.exit(1);
+		}
 		
-		getContentPane().add(guess);
+		
+		gb.addActionListener(new GuessHandler(this));
+		c.gridx = 0;
+		c.gridx= 0;
+		getContentPane().add(guess, c);
+		c.gridx = 1;
+		getContentPane().add(gb, c);
+		c.gridx = 2;
+		getContentPane().add(label, c);
 		pack();
 		
 		
@@ -63,7 +92,7 @@ public class GuessWindow extends JFrame
 	
 	void ShowCard(Card c)
 	{
-		
+		label.setIcon(new ImageIcon(CardImages.getImage(c)));
 	}
 	
 	
@@ -100,12 +129,17 @@ class GuessControl extends JPanel{
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets(0, 0, 0, 0);
 		
-		//TO-DO pegar room certa
-		roomID = 0;
-		
-	
-		
 		gv = gameview;
+		suspectID = -1;
+		weaponID = -1;
+		
+		//TO-DO pegar room certa
+		
+		roomID = gv.gc.getTabuleiro().emComodo(gv.gc.getTurn()) - ObservedGame.COZINHA;
+		System.out.println(roomID);
+		
+		
+		
 		
 		Plistener = new ActionListener(){
 			@Override
@@ -131,11 +165,7 @@ class GuessControl extends JPanel{
 				}
 				weaponID = i;
 			}
-		};
-		
-		
-		
-		
+		};		
 		
 		suspectGroup = new ButtonGroup();
 		suspectButtons = new JRadioButton[6];
@@ -156,12 +186,9 @@ class GuessControl extends JPanel{
 			weaponGroup.add(weaponButtons[i]);
 			
 		}
-		
 		//TO-DO pegar quarto correto
-		roomButton = new JRadioButton(ObservedGame.NAMES[ObservedGame.COZINHA]);
+		roomButton = new JRadioButton(ObservedGame.NAMES[gv.gc.getTabuleiro().emComodo(gv.gc.getTurn())], true);
 		
-		
-			
 				
 		c.weightx = 1;
 		c.weighty = 1;
@@ -223,8 +250,13 @@ class GuessHandler implements ActionListener
 	
 	public void actionPerformed(ActionEvent arg0) 
 	{
-		Card c = gw.gv.gc.guess(gw.guess.suspectID, gw.guess.weaponID, gw.guess.roomID);
-		gw.ShowCard(c);
+		
+		if(!gw.gv.gc.getHasGuessed() && gw.guess.suspectID != -1 && gw.guess.weaponID != -1)
+		{
+			Card c = gw.gv.gc.guess(gw.guess.suspectID, gw.guess.weaponID, gw.guess.roomID);
+			gw.ShowCard(c);
+		}
+		
 		
 	}
 
