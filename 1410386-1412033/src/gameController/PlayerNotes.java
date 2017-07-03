@@ -1,7 +1,12 @@
 package gameController;
 
-class PlayerNotes 
+class PlayerNotes implements java.io.Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -886202489106592269L;
+
 	//player é representado por um inteiro
 	private int player;
 	

@@ -12,14 +12,19 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-public class Tabuleiro {
-	public  BufferedImage imgTabuleiro;
-	public  BufferedImage imgCorda;
-	public  BufferedImage imgCano;
-	public  BufferedImage imgFaca;
-	public  BufferedImage imgChave;
-	public  BufferedImage imgCastical;
-	public  BufferedImage imgRevolver;
+public class Tabuleiro implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3477989291388052589L;
+	
+	public  transient BufferedImage imgTabuleiro;
+	public  transient BufferedImage imgCorda;
+	public  transient BufferedImage imgCano;
+	public  transient BufferedImage imgFaca;
+	public  transient BufferedImage imgChave;
+	public  transient BufferedImage imgCastical;
+	public  transient BufferedImage imgRevolver;
 	private double img_escalaHorizontal 	= 1.0;
 	private double img_escalaVertical 		= 1.0;
 
@@ -55,16 +60,9 @@ public class Tabuleiro {
 	
 	public Tabuleiro(){
 		Scanner infomatriz=null;
+		readImages();
 		try{
-			imgTabuleiro = ImageIO.read(new File("assets/Tabuleiro-Dobrado.JPG"));
 			infomatriz = new Scanner(new FileReader("assets/Tabuleiro-Dobrado"));
-			
-			imgCorda = ImageIO.read(new File("assets/Armas/Corda.jpg"));
-			imgCano = ImageIO.read(new File("assets/Armas/Cano.jpg"));
-			imgFaca = ImageIO.read(new File("assets/Armas/Faca.jpg"));
-			imgChave = ImageIO.read(new File("assets/Armas/ChaveInglesa.jpg"));
-			imgCastical = ImageIO.read(new File("assets/Armas/Castical.jpg"));
-			imgRevolver = ImageIO.read(new File("assets/Armas/Revolver.jpg"));
 			
 		} catch (IOException e){
 			System.out.println("Incapaz de abrir arquivo. Erro:" + e.getMessage());
@@ -94,6 +92,25 @@ public class Tabuleiro {
 			}
 		}
 		infomatriz.close();
+	}
+	
+	void readImages()
+	{
+		System.out.println("reading images");
+		try{
+			imgTabuleiro = ImageIO.read(new File("assets/Tabuleiro-Dobrado.JPG"));
+			
+			imgCorda = ImageIO.read(new File("assets/Armas/Corda.jpg"));
+			imgCano = ImageIO.read(new File("assets/Armas/Cano.jpg"));
+			imgFaca = ImageIO.read(new File("assets/Armas/Faca.jpg"));
+			imgChave = ImageIO.read(new File("assets/Armas/ChaveInglesa.jpg"));
+			imgCastical = ImageIO.read(new File("assets/Armas/Castical.jpg"));
+			imgRevolver = ImageIO.read(new File("assets/Armas/Revolver.jpg"));
+			
+		} catch (IOException e){
+			System.out.println("Incapaz de abrir arquivo. Erro:" + e.getMessage());
+			System.exit(1);
+		}		
 	}
 	
 	
