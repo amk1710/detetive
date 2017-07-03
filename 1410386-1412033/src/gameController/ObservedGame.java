@@ -1,6 +1,5 @@
 package gameController;
 
-import java.io.FileOutputStream;
 import java.util.Observer;
 
 //interface que define como a GUI pode interagir com as regras do jogo
@@ -72,12 +71,10 @@ public interface ObservedGame
 	
 	public boolean getHasGuessed();
 	
-	public boolean accuse(int suspectID, int weaponID, int roomID);
-	
-	public boolean allLost();
-	
-	public void saveGame(FileOutputStream fileOut);
-	
+	//tempor�ria! Quebra arquitetura?
 	public Tabuleiro getTabuleiro();
+
+
+	public boolean[] getActivePlayers();
 	
 }

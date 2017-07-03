@@ -1,6 +1,5 @@
 package gameView;
 
-import gameController.Card;
 import gameController.ObservedGame;
 
 import java.awt.Dimension;
@@ -14,16 +13,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -32,45 +26,22 @@ public class AccuseWindow extends JFrame
 	public final int WIDTH	= 640;
 	public final int HEIGHT = 480;
 	
-	AccuseControl accuse;
-	
-	ImageIcon image;
-	JLabel label;
+	AccuseControl accuseController;
 	
 	ObservedGame gc;
 	GameView gv;
-	JButton ab;
 	
 	public AccuseWindow(String s, GameView gameview)
 	{
-		setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 0, 0, 0);
-		
+		super (s);
 		gv = gameview;
-			
-		accuse = new AccuseControl(gv);
-		ab = new JButton("Acusar");
-		try 
-		{
-			image = new ImageIcon(ImageIO.read(new File("assets/blank.jpg")));
-			label = new JLabel(image);
-		}  catch (IOException e)
-		{
-			System.out.println("Incapaz de abrir imagem. Erro:" + e.getMessage());
-			System.exit(1);
-		}
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setResizable(false);
 		
 		
-		ab.addActionListener(new AccuseHandler(this));
-		c.gridx = 0;
-		c.gridx= 0;
-		getContentPane().add(accuse, c);
-		c.gridx = 1;
-		getContentPane().add(ab, c);
-		c.gridx = 2;
-		getContentPane().add(label, c);
+		
+		accuseController = new AccuseControl(gv);
+		setContentPane(accuseController);
 		pack();
 		
 		
@@ -86,8 +57,6 @@ public class AccuseWindow extends JFrame
 		setBounds(x,y,(int)getContentPane().getPreferredSize().getWidth(),(int)getContentPane().getPreferredSize().getHeight());
 	
 	}
-	
-	
 	
 	
 }
@@ -109,21 +78,25 @@ class AccuseControl extends JPanel{
 	private ActionListener Wlistener;
 	private ActionListener Glistener;
 	
-	int suspectID = -1;
-	int weaponID = -1;
-	int roomID = -1;
+	int suspectID;
+	int weaponID;
+	//roomId � fixo no quarto
+	int roomID;
 	
 	
 	AccuseControl(GameView gameview)
 	{
 		
-		
-		
 		//Define layout do painel contendo os botÃµes
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0, 0, 0, 0);	
+		c.insets = new Insets(0, 0, 0, 0);
+		
+		//TO-DO pegar room certa
+		roomID = 0;
+		
+	
 		
 		gv = gameview;
 		
@@ -162,11 +135,9 @@ class AccuseControl extends JPanel{
 				{
 					if(roomButtons[i].equals(e.getSource())) break;
 				}
-				roomID = i;
+				weaponID = i;
 			}
 		};		
-		
-		
 		
 		suspectGroup = new ButtonGroup();
 		suspectButtons = new JRadioButton[6];
@@ -190,15 +161,13 @@ class AccuseControl extends JPanel{
 		
 		roomGroup = new ButtonGroup();
 		roomButtons = new JRadioButton[9];
-		for(int i = 0; i < roomButtons.length; i++)
+		for(int i = 0; i < weaponButtons.length; i++)
 		{
 			roomButtons[i] = new JRadioButton(ObservedGame.NAMES[i + ObservedGame.COZINHA]);
 			roomButtons[i].addActionListener(Glistener);
 			roomGroup.add(roomButtons[i]);
 			
 		}			
-		
-		
 				
 		c.weightx = 1;
 		c.weighty = 1;
@@ -233,7 +202,6 @@ class AccuseControl extends JPanel{
 		add(weaponButtons[5], c);
 		c.gridy=6;
 		
-		
 		c.gridx = 2;
 		c.gridy=0;
 		add(roomButtons[0], c);
@@ -254,54 +222,11 @@ class AccuseControl extends JPanel{
 		c.gridy=8;
 		add(roomButtons[8], c);
 
+		
 	}
 	
 	public Dimension getPreferredSize() {
         return new Dimension(400, 300);
     }
-}
-
-class AccuseHandler implements ActionListener
-{
-	
-	AccuseWindow ac;
-	
-	public AccuseHandler(AccuseWindow accusewindow)
-	{
-		ac = accusewindow;
-	}
-	
-	public void actionPerformed(ActionEvent arg0) 
-	{
-		if(ac.accuse.roomID != -1 && ac.accuse.suspectID != -1 && ac.accuse.weaponID != -1)
-		{
-			boolean won = ac.gv.gc.accuse(ac.accuse.suspectID, ac.accuse.weaponID, ac.accuse.roomID);
-			try
-			{
-				if(won)
-				{
-					ac.label.setIcon(new ImageIcon(ImageIO.read(new File("assets/won.jpg"))));
-					ac.gv.endGame();
-				}
-				else if(ac.gv.gc.allLost())
-				{
-					ac.label.setIcon(new ImageIcon(ImageIO.read(new File("assets/lost2.jpg"))));
-					ac.gv.endGame();
-				}
-				else
-				{
-					ac.label.setIcon(new ImageIcon(ImageIO.read(new File("assets/lost.jpg"))));
-				}
-			}catch (IOException e)
-			{
-				System.out.println("Incapaz de abrir imagem. Erro:" + e.getMessage());
-				System.exit(1);
-			}
-			
-		}
-		
-		
-	}
-
 }
 

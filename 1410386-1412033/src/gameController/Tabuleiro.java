@@ -12,19 +12,14 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-public class Tabuleiro implements java.io.Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3477989291388052589L;
-	
-	public  transient BufferedImage imgTabuleiro;
-	public  transient BufferedImage imgCorda;
-	public  transient BufferedImage imgCano;
-	public  transient BufferedImage imgFaca;
-	public  transient BufferedImage imgChave;
-	public  transient BufferedImage imgCastical;
-	public  transient BufferedImage imgRevolver;
+public class Tabuleiro {
+	public  BufferedImage imgTabuleiro;
+	public  BufferedImage imgCorda;
+	public  BufferedImage imgCano;
+	public  BufferedImage imgFaca;
+	public  BufferedImage imgChave;
+	public  BufferedImage imgCastical;
+	public  BufferedImage imgRevolver;
 	private double img_escalaHorizontal 	= 1.0;
 	private double img_escalaVertical 		= 1.0;
 
@@ -60,9 +55,16 @@ public class Tabuleiro implements java.io.Serializable{
 	
 	public Tabuleiro(){
 		Scanner infomatriz=null;
-		readImages();
 		try{
+			imgTabuleiro = ImageIO.read(new File("assets/Tabuleiro-Dobrado.JPG"));
 			infomatriz = new Scanner(new FileReader("assets/Tabuleiro-Dobrado"));
+			
+			imgCorda = ImageIO.read(new File("assets/Armas/Corda.jpg"));
+			imgCano = ImageIO.read(new File("assets/Armas/Cano.jpg"));
+			imgFaca = ImageIO.read(new File("assets/Armas/Faca.jpg"));
+			imgChave = ImageIO.read(new File("assets/Armas/ChaveInglesa.jpg"));
+			imgCastical = ImageIO.read(new File("assets/Armas/Castical.jpg"));
+			imgRevolver = ImageIO.read(new File("assets/Armas/Revolver.jpg"));
 			
 		} catch (IOException e){
 			System.out.println("Incapaz de abrir arquivo. Erro:" + e.getMessage());
@@ -92,25 +94,6 @@ public class Tabuleiro implements java.io.Serializable{
 			}
 		}
 		infomatriz.close();
-	}
-	
-	void readImages()
-	{
-		System.out.println("reading images");
-		try{
-			imgTabuleiro = ImageIO.read(new File("assets/Tabuleiro-Dobrado.JPG"));
-			
-			imgCorda = ImageIO.read(new File("assets/Armas/Corda.jpg"));
-			imgCano = ImageIO.read(new File("assets/Armas/Cano.jpg"));
-			imgFaca = ImageIO.read(new File("assets/Armas/Faca.jpg"));
-			imgChave = ImageIO.read(new File("assets/Armas/ChaveInglesa.jpg"));
-			imgCastical = ImageIO.read(new File("assets/Armas/Castical.jpg"));
-			imgRevolver = ImageIO.read(new File("assets/Armas/Revolver.jpg"));
-			
-		} catch (IOException e){
-			System.out.println("Incapaz de abrir arquivo. Erro:" + e.getMessage());
-			System.exit(1);
-		}		
 	}
 	
 	
@@ -221,7 +204,7 @@ public class Tabuleiro implements java.io.Serializable{
 		return 0;
 	}
 	
-public int getTamanhoTabuleiro(){
+	public int getTamanhoTabuleiro(){
 		return matriz_numLinhas*matriz_numColunas;
 	}
 	public int getDX(){
@@ -268,8 +251,8 @@ public int getTamanhoTabuleiro(){
 							switch(j + ObservedGame.COZINHA)
 							{
 							case (ObservedGame.COZINHA):	
-								if(!jogadorEm(4,6, indexJogador))
-									posJogador[0] = 4 + 6*matriz_numColunas;
+								if(!jogadorEm(4,7, indexJogador))
+									posJogador[0] = 4 + 7*matriz_numColunas;
 								break;
 							case (ObservedGame.JANTAR):		
 								if(!jogadorEm(8,12, indexJogador))
@@ -355,7 +338,7 @@ public int getTamanhoTabuleiro(){
 	private boolean movimentacaoValidaComodo(int xMouse, int yMouse, int xJogador, int yJogador, int passo, int indexJogador) {
 		//Dentro da cozinha
 		if(matriz[xMouse + yMouse*matriz_numColunas][0] == ObservedGame.COZINHA)
-			if(distanciaValida(4, 6, xJogador, yJogador, passo-1) && !jogadorEm(4,6, indexJogador))
+			if(distanciaValida(4, 7, xJogador, yJogador, passo-1) && !jogadorEm(4, 7, indexJogador))
 				return true;
 		//Dentro da sala de musica
 		if(matriz[xMouse + yMouse*matriz_numColunas][0] == ObservedGame.MUSICA)
@@ -404,7 +387,7 @@ public int getTamanhoTabuleiro(){
 		switch(comodoJogador)
 		{
 		case ObservedGame.COZINHA:
-			if(distanciaValida(4, 6, xMouse, yMouse, passo-1) && !jogadorEm(4,6, indexJogador))
+			if(distanciaValida(4, 7, xMouse, yMouse, passo-1) && !jogadorEm(4,7, indexJogador))
 				return true;
 		//Dentro da sala de musica
 		case ObservedGame.MUSICA:
@@ -465,7 +448,56 @@ public int getTamanhoTabuleiro(){
 		System.out.println("Muito longe!");
 		return false;
 	}
-
+	
+	public void mudaPosJogadorPassagemSecreta(int indexJogador, int comodoJogador)
+	{
+		for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+		{
+			if(comodos[comodoJogador - ObservedGame.COZINHA][j] == indexJogador){
+				comodos[comodoJogador - ObservedGame.COZINHA][j] = Tabuleiro.VAZIO;
+				break;
+			}
+		}
+		switch(comodoJogador)
+		{
+		case(ObservedGame.COZINHA):		
+			for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+			{
+				if(comodos[ObservedGame.ESCRITORIO - ObservedGame.COZINHA][j] == Tabuleiro.VAZIO){
+					comodos[ObservedGame.ESCRITORIO - ObservedGame.COZINHA][j] = indexJogador;
+					break;
+				}
+			}
+		break;
+		case(ObservedGame.ESTAR):				
+			for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+			{
+				if(comodos[ObservedGame.INVERNO - ObservedGame.COZINHA][j] == Tabuleiro.VAZIO){
+					comodos[ObservedGame.INVERNO - ObservedGame.COZINHA][j] = indexJogador;
+					break;
+				}
+			}
+		break;
+		case(ObservedGame.INVERNO):
+			for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+			{
+				if(comodos[ObservedGame.ESTAR - ObservedGame.COZINHA][j] == Tabuleiro.VAZIO){
+					comodos[ObservedGame.ESTAR - ObservedGame.COZINHA][j] = indexJogador;
+					break;
+				}
+			}
+		break;
+		case(ObservedGame.ESCRITORIO):	
+			for(int j=0; j<ObservedGame.numPlayers+ObservedGame.numWeapons; j++)
+			{
+				if(comodos[ObservedGame.COZINHA - ObservedGame.COZINHA][j] == Tabuleiro.VAZIO){
+					comodos[ObservedGame.COZINHA - ObservedGame.COZINHA][j] = indexJogador;
+					break;
+				}
+			}
+		break;
+		}
+	}
 	public void mudaPosJogador(int pixelX, int pixelY, int indexJogador) {
 
 			int x = pixelX/matriz_larguraColuna;
@@ -669,8 +701,8 @@ public int getTamanhoTabuleiro(){
 						{
 						case (ObservedGame.COZINHA):	
 							comodoJogador = ObservedGame.COZINHA;
-							if(!jogadorEm(4,6, jogador))
-								posJogador[0] = 4 + 6*matriz_numColunas;
+							if(!jogadorEm(4,7, jogador))
+								posJogador[0] = 4 + 7*matriz_numColunas;
 							break;
 						case (ObservedGame.JANTAR):		
 							comodoJogador = ObservedGame.JANTAR;

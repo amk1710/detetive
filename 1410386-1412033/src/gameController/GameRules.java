@@ -1,11 +1,5 @@
 package gameController;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
@@ -13,19 +7,11 @@ import java.util.Random;
 import java.util.Vector;
 
 //classe que controlam regras do jogo, recebendo a��es da GUI atrav�s da interface ObservedGame e notificando mudan�as
-class GameRules extends Observable implements ObservedGame, java.io.Serializable
+class GameRules extends Observable implements ObservedGame
 {
-	
-	
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3883952072292744394L;
-
 	private GameRules gr;
 	
-	Tabuleiro tabuleiro;
+	private Tabuleiro tabuleiro;
 	
 	
 	private boolean[] activePlayers;
@@ -78,10 +64,12 @@ class GameRules extends Observable implements ObservedGame, java.io.Serializable
 		dealCards();
 	}
 	
+	//construtor para jogo salvo
+	public GameRules()
+	{
+		
+	}
 	
-	
-	
-
 	public void notifyObservers()
 	{
 		setChanged();
@@ -139,6 +127,7 @@ class GameRules extends Observable implements ObservedGame, java.io.Serializable
 
 	public boolean[] getNotedPlayers() 
 	{
+		System.out.println("getnotedplayers");
 		if(activePlayers[currentTurn] == true)
 		{
 			return notes[currentTurn].getEliminatedPlayers();
@@ -166,22 +155,32 @@ class GameRules extends Observable implements ObservedGame, java.io.Serializable
 	
 	public void setNotes_Players(boolean[] notedPlayers)
 	{
-		notes[currentTurn].setEliminatedPlayers(notedPlayers);
-		
+		notes[this.getPreviousTurn()].setEliminatedPlayers(notedPlayers);
 	}
 
 	
 	public void setNotes_Weapons(boolean[] notedWeapons) 
 	{
-		notes[currentTurn].setEliminatedWeapons(notedWeapons);
-		
+		notes[this.getPreviousTurn()].setEliminatedWeapons(notedWeapons);	
 	}
 
 	
+	private int getPreviousTurn() {
+		int previousTurn;
+		for(int i=1; i<6; i++)
+		{
+			previousTurn = currentTurn -i;
+			if(previousTurn <0)
+				previousTurn = 6 - (i - currentTurn);
+			if(activePlayers[previousTurn] == true)
+				return previousTurn; 
+		}
+		return -1;
+	}
+
 	public void setNotes_Rooms(boolean[] notedRooms) 
 	{
-		notes[currentTurn].setEliminatedRooms(notedRooms);
-		
+		notes[this.getPreviousTurn()].setEliminatedRooms(notedRooms);
 	}
 
 	public Tabuleiro getTabuleiro() {
@@ -244,8 +243,6 @@ class GameRules extends Observable implements ObservedGame, java.io.Serializable
 		answer[1] = weapons.remove(weapons.size() - 1);
 		answer[2] = rooms.remove(rooms.size() - 1);
 		
-		System.out.println(answer[0].getName() + " " + answer[1].getName() + " " + answer[2].getName() + " ");
-		
 		allCards.addAll(suspects);
 		allCards.addAll(weapons);
 		allCards.addAll(rooms);
@@ -295,7 +292,7 @@ class GameRules extends Observable implements ObservedGame, java.io.Serializable
 		
 		//checa se h� alguma carta em alguma outra m�o
 		int i = (currentTurn+1)%6;
-		while(i != (currentTurn)%6)
+		while(i != (currentTurn+1)%6)
 		{
 			for(Card c: playerCards[i])
 			{
@@ -336,28 +333,11 @@ class GameRules extends Observable implements ObservedGame, java.io.Serializable
 		}
 	}
 
-	
-	public boolean allLost() 
-	{
-		for(int i = 0; i < activePlayers.length; i++)
-		{
-			if(activePlayers[i]) return false;
-		}
-		return true;
+
+	public boolean[] getActivePlayers() {
+		return activePlayers;
 	}
 	
-	public void saveGame(FileOutputStream fileOut)
-	{
-		try {
-	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	         out.writeObject(this);
-	         out.close();
-	         fileOut.close();
-	         System.out.printf("Serialized data is saved!");
-	      }catch(IOException i) {
-	    	  System.out.println("Erro de salvamento:" + i.getMessage());
-	      }
-	}
 
 }
 

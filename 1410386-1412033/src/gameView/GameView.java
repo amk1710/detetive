@@ -42,65 +42,34 @@ public class GameView extends JFrame //implements Observer
 	public GameView(String s, boolean[] activePlayer)
 	{
 		super (s);
-		//setResizable(false);
+		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		gc = GameRulesFactory.getGameInstance();
-		//gc.addObserver(this);		
 		
-		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
+		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 0));
 		
-		grid = new PainelTabuleiro(gc, this);
+		grid = new PainelTabuleiro(this);
 		actions = new  PainelAcoes(this);
-		//infos   = new  PainelInformacoes(gc,this);
-
-
+		infos   = new  PainelInformacoes(this);
+		
 		getContentPane().add(grid);
 		getContentPane().add(actions);
-		pack();
-		// Inicializa janela no tamanho default no centro da tela.
-		Toolkit tk=Toolkit.getDefaultToolkit();
-		Dimension screenSize=tk.getScreenSize();
-		int	sl=screenSize.width;
-		int	sa=screenSize.height;
+		getContentPane().add(infos);
 		
-		setBounds(0,0,(int)getContentPane().getPreferredSize().getWidth(),(int)getContentPane().getPreferredSize().getHeight());
+		setBounds(0,0, (int)this.getPreferredSize().getWidth()+80, (int)this.getPreferredSize().getHeight());
 		
 				
 	}
 	
-	public GameView(String s, File input)
+	public int getHeight()
 	{
-		super (s);
-		//setResizable(false);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
-		gc = GameRulesFactory.getGameInstance(input);
-		//gc.addObserver(this);		
-		
-		getContentPane().setLayout(new FlowLayout(FlowLayout.LEADING, 15, 30));
-		
-		grid = new PainelTabuleiro(gc, this);
-		actions = new  PainelAcoes(this);
-		//infos   = new  PainelInformacoes(gc,this);
-
-
-		getContentPane().add(grid);
-		getContentPane().add(actions);
-		pack();
-		// Inicializa janela no tamanho default no centro da tela.
-		Toolkit tk=Toolkit.getDefaultToolkit();
-		Dimension screenSize=tk.getScreenSize();
-		int	sl=screenSize.width;
-		int	sa=screenSize.height;
-		
-		setBounds(0,0,(int)getContentPane().getPreferredSize().getWidth(),(int)getContentPane().getPreferredSize().getHeight());
+		return (int)grid.getPreferredSize().getHeight();
 	}
-	
-	//chamada quando um jogador ganha ou todos perdem
-	void endGame()
+	public Dimension getPreferredSize()
 	{
-		this.dispose();
+		return new Dimension((int) (grid.getPreferredSize().getWidth() + actions.getPreferredSize().getWidth() + infos.getPreferredSize().getWidth()), (int) (grid.getPreferredSize().getHeight()));
+				
 	}
 }
 
@@ -111,10 +80,9 @@ class PainelTabuleiro extends JPanel implements Observer
 	private GameView gv;
 	private Tabuleiro tabuleiro = null;
 	
-	public PainelTabuleiro(ObservedGame game, GameView gameview)
+	public PainelTabuleiro( GameView gameview)
 	{
-	
-		this.gc = game;
+		this.gc = GameRulesFactory.getGameInstance();
 		this.gc.addObserver(this);
 		this.tabuleiro = gc.getTabuleiro();
 		this.gv = gameview;
@@ -142,13 +110,14 @@ class PainelTabuleiro extends JPanel implements Observer
 					repaint();
 					//abre janela de palpite
 					//TO-DO se entrar em comodo chamar uma funçao para notificar painel de acoes e oferecer opcao de dar palpite
-					System.out.println("em comodo? " + tabuleiro.emComodo(gc.getTurn()));
-					if(tabuleiro.emComodo(gc.getTurn()) != -1)
-					{
+					//if()
+					//{
 						GuessWindow gw = new GuessWindow("Palpite", gv);
 						gw.setVisible(true);
-					}
+					//}
 					
+					//Passa a vez. Agora? Melhor por um bot�o n�?
+					gc.endTurn();
 				}
 			}
 			public void mouseEntered(MouseEvent arg0) {}
@@ -158,14 +127,15 @@ class PainelTabuleiro extends JPanel implements Observer
 		});
 	}
 
-	public Dimension getPreferredSize() {
-        return new Dimension((int) (tabuleiro.imgTabuleiro.getWidth()*tabuleiro.getEscalaHorizontal()), (int) (tabuleiro.imgTabuleiro.getHeight()*tabuleiro.getEscalaVertical()));
-    }
-	
+	public Dimension getPreferredSize(){
+		return new Dimension((int) (tabuleiro.imgTabuleiro.getWidth()), (int) (tabuleiro.imgTabuleiro.getHeight()+50));
+	}
+
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		g.drawImage(tabuleiro.imgTabuleiro, 0, 0, (int) (tabuleiro.imgTabuleiro.getWidth()*tabuleiro.getEscalaHorizontal()), (int) (tabuleiro.imgTabuleiro.getHeight()*tabuleiro.getEscalaVertical()), this);
+		
+		g.drawImage(tabuleiro.imgTabuleiro, 0, 0, (int) (tabuleiro.imgTabuleiro.getWidth()), (int) (tabuleiro.imgTabuleiro.getHeight()), this);
 		Graphics2D g2d  = (Graphics2D) g;
 		
 		
@@ -258,7 +228,7 @@ class PainelTabuleiro extends JPanel implements Observer
 	public void update(Observable o, Object obj) {
 		if(gc.getDieWasRolled()){
 			tabuleiro.AdicionaAlcance(gc.getDie(), gc.getTurn());
-			repaint();
 		}
-	}
+		repaint();
+	}	
 }
