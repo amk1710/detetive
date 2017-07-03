@@ -1,5 +1,6 @@
 package gameView;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -7,30 +8,36 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import gameController.GameRulesFactory;
 import gameController.ObservedGame;
 
-public class PainelInformacoes extends JPanel implements Observer {
+public class PainelInformacoes extends JPanel{
 	private GameView gv;
 	private ObservedGame gc;
 	private PainelNotas notesP;
 	private JButton myCardsB;
 	private JButton accuseB;
+	private PainelJogadores playersP;
 	
 	public PainelInformacoes(GameView game)
 	{
 		gv = game;
 		gc = GameRulesFactory.getGameInstance();
-		gc.addObserver(this);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		
@@ -38,7 +45,7 @@ public class PainelInformacoes extends JPanel implements Observer {
 		
 		//botï¿½o usado para abrir a janela das notas
         notesP = new PainelNotas(gc,gv);
-		
+		playersP = new PainelJogadores(gc);
 		//botï¿½o usado para ver cartas do player
 		myCardsB = new JButton("Ver Minhas Cartas");
         myCardsB.addActionListener(new MyCardsButtonHandler(gv));
@@ -47,6 +54,8 @@ public class PainelInformacoes extends JPanel implements Observer {
         accuseB =  new JButton("Acusar");
         accuseB.addActionListener(new AccuseButtonHandler(gv));
         
+        
+        add(playersP);
 		Dimension minSize = new Dimension(0, 30);
 		Dimension prefSize = new Dimension(0, Short.MAX_VALUE);
 		Dimension maxSize = new Dimension(0, Short.MAX_VALUE);
@@ -60,11 +69,6 @@ public class PainelInformacoes extends JPanel implements Observer {
 	public Dimension getPreferredSize()
 	{
 		return new Dimension((int)(notesP.getPreferredSize().getWidth()),(int) gv.getHeight());
-	}
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
@@ -268,6 +272,113 @@ class PainelNotas extends JPanel implements Observer
 		}
 		repaint();
 	}
+}
+
+class PainelJogadores extends JPanel implements Observer
+{
+	private BufferedImage green;
+	JLabel greenLabel; 
+	private BufferedImage mustard;
+	JLabel mustardLabel; 
+	private BufferedImage peacock;
+	JLabel peacockLabel; 
+	private BufferedImage plum;
+	JLabel plumLabel; 
+	private BufferedImage scarlet;
+	JLabel scarletLabel; 
+	private BufferedImage white;
+	JLabel whiteLabel; 
+	private ObservedGame gc;
 	
-	
+	public PainelJogadores(ObservedGame game)
+	{
+		gc = game;
+		gc.addObserver(this);
+		try
+		{
+			green = ImageIO.read(new File("assets/Suspeitos/greenIcon.jpg"));
+			mustard = ImageIO.read(new File("assets/Suspeitos/mustardIcon.jpg"));
+			peacock = ImageIO.read(new File("assets/Suspeitos/peacockIcon.jpg"));
+			plum = ImageIO.read(new File("assets/Suspeitos/plumIcon.jpg"));
+			scarlet = ImageIO.read(new File("assets/Suspeitos/scarletIcon.jpg"));
+			white = ImageIO.read(new File("assets/Suspeitos/whiteIcon.jpg"));
+			
+		}catch(IOException e)
+		{
+			System.out.println("Erro ao tentar abrir imagem.");
+			System.exit(1);
+		}
+		
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+				
+		c.weightx = 0;
+		c.weighty = 1;
+		
+		greenLabel = new JLabel(new ImageIcon(green));
+		mustardLabel = new JLabel(new ImageIcon(mustard));
+		peacockLabel = new JLabel(new ImageIcon(peacock));
+		plumLabel = new JLabel(new ImageIcon(plum));
+		scarletLabel = new JLabel(new ImageIcon(scarlet));
+		whiteLabel = new JLabel(new ImageIcon(white));
+		
+		c.gridx=0;
+		c.gridy=0;
+		add(scarletLabel,c);
+		c.gridx=0;
+		c.gridy=1;
+		add(mustardLabel,c);
+		c.gridx=0;
+		c.gridy=2;
+		add(whiteLabel,c);
+		c.gridx=1;
+		c.gridy=0;
+		add(greenLabel,c);
+		c.gridx=1;
+		c.gridy=1;
+		add(peacockLabel,c);
+		c.gridx=1;
+		c.gridy=2;
+		add(plumLabel,c);
+	}
+
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		
+		scarletLabel.setBorder(null);
+		mustardLabel.setBorder(null);
+		whiteLabel.setBorder(null);
+		greenLabel.setBorder(null);
+		peacockLabel.setBorder(null);
+		plumLabel.setBorder(null);
+		
+		for(int i=0; i<ObservedGame.numPlayers; i++)
+		{
+			
+				
+		}
+		
+		switch(gc.getTurn())
+		{
+		case ObservedGame.SCARLET: scarletLabel.setBorder(new javax.swing.border.LineBorder(Color.GREEN, 10)); break;
+		case ObservedGame.MUSTARD: mustardLabel.setBorder(new javax.swing.border.LineBorder(Color.GREEN, 10)); break;
+		case ObservedGame.WHITE:   whiteLabel.setBorder(new javax.swing.border.LineBorder(Color.GREEN, 10));   break;
+		case ObservedGame.GREEN:   greenLabel.setBorder(new javax.swing.border.LineBorder(Color.GREEN, 10));   break;
+		case ObservedGame.PEACOCK: peacockLabel.setBorder(new javax.swing.border.LineBorder(Color.GREEN, 10)); break;
+		case ObservedGame.PLUM:    plumLabel.setBorder(new javax.swing.border.LineBorder(Color.GREEN, 10));    break;
+		}
+	}
+
+	public Dimension getPreferredSize()
+	{
+		return new Dimension(300, 50);
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		repaint();
+		
+	}
 }

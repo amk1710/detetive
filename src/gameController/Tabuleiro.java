@@ -251,8 +251,8 @@ public class Tabuleiro {
 							switch(j + ObservedGame.COZINHA)
 							{
 							case (ObservedGame.COZINHA):	
-								if(!jogadorEm(4,6, indexJogador))
-									posJogador[0] = 4 + 6*matriz_numColunas;
+								if(!jogadorEm(4,7, indexJogador))
+									posJogador[0] = 4 + 7*matriz_numColunas;
 								break;
 							case (ObservedGame.JANTAR):		
 								if(!jogadorEm(8,12, indexJogador))
@@ -338,7 +338,7 @@ public class Tabuleiro {
 	private boolean movimentacaoValidaComodo(int xMouse, int yMouse, int xJogador, int yJogador, int passo, int indexJogador) {
 		//Dentro da cozinha
 		if(matriz[xMouse + yMouse*matriz_numColunas][0] == ObservedGame.COZINHA)
-			if(distanciaValida(4, 6, xJogador, yJogador, passo-1) && !jogadorEm(4,6, indexJogador))
+			if(distanciaValida(4, 7, xJogador, yJogador, passo-1) && !jogadorEm(4, 7, indexJogador))
 				return true;
 		//Dentro da sala de musica
 		if(matriz[xMouse + yMouse*matriz_numColunas][0] == ObservedGame.MUSICA)
@@ -387,7 +387,7 @@ public class Tabuleiro {
 		switch(comodoJogador)
 		{
 		case ObservedGame.COZINHA:
-			if(distanciaValida(4, 6, xMouse, yMouse, passo-1) && !jogadorEm(4,6, indexJogador))
+			if(distanciaValida(4, 7, xMouse, yMouse, passo-1) && !jogadorEm(4,7, indexJogador))
 				return true;
 		//Dentro da sala de musica
 		case ObservedGame.MUSICA:
@@ -701,8 +701,8 @@ public class Tabuleiro {
 						{
 						case (ObservedGame.COZINHA):	
 							comodoJogador = ObservedGame.COZINHA;
-							if(!jogadorEm(4,6, jogador))
-								posJogador[0] = 4 + 6*matriz_numColunas;
+							if(!jogadorEm(4,7, jogador))
+								posJogador[0] = 4 + 7*matriz_numColunas;
 							break;
 						case (ObservedGame.JANTAR):		
 							comodoJogador = ObservedGame.JANTAR;

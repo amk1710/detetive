@@ -88,8 +88,8 @@ public class PainelAcoes extends JPanel implements Observer {
 			rollDie.setVisible(true);
 			rollDie.setAlignmentX(CENTER_ALIGNMENT);
 		}
-		if(gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.COZINHA || gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.ESCRITORIO
-			|| gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.ESTAR || gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.INVERNO)
+		if((gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.COZINHA || gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.ESCRITORIO
+			|| gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.ESTAR || gc.getTabuleiro().emComodo(gc.getTurn()) == ObservedGame.INVERNO) && gc.getDieWasRolled() != true)
 		{
 			passagemSecreta.setVisible(true);
 			passagemSecreta.setAlignmentX(CENTER_ALIGNMENT);
