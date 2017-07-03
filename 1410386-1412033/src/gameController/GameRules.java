@@ -323,6 +323,16 @@ class GameRules extends Observable implements ObservedGame
 			return false;
 		}
 	}
+
+	
+	public boolean allLost() 
+	{
+		for(int i = 0; i < activePlayers.length; i++)
+		{
+			if(activePlayers[i]) return false;
+		}
+		return true;
+	}
 	
 
 }

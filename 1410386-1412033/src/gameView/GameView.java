@@ -68,6 +68,11 @@ public class GameView extends JFrame //implements Observer
 		
 				
 	}
+	//chamada quando um jogador ganha ou todos perdem
+	void endGame()
+	{
+		this.dispose();
+	}
 }
 
 
@@ -115,8 +120,6 @@ class PainelTabuleiro extends JPanel implements Observer
 						gw.setVisible(true);
 					}
 					
-					//Passa a vez. Agora? Melhor por um bot�o n�?
-					gc.endTurn();
 				}
 			}
 			public void mouseEntered(MouseEvent arg0) {}
@@ -228,5 +231,5 @@ class PainelTabuleiro extends JPanel implements Observer
 			tabuleiro.AdicionaAlcance(gc.getDie(), gc.getTurn());
 			repaint();
 		}
-	}	
+	}
 }
